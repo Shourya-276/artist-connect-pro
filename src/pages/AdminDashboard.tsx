@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, Users, Music, CreditCard, TrendingUp, Upload, Shield, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { BarChart3, Users, Music, CreditCard, TrendingUp, Upload, Shield, ChevronRight, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { mockArtists } from '@/data/mockData';
 
@@ -23,6 +24,7 @@ const roleBadge = (role: string) => {
 };
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [role] = useState('SuperAdmin');
 
@@ -36,7 +38,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen flex pt-16">
       {/* Sidebar */}
-      <aside className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border hidden lg:block">
+      <aside className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border hidden lg:flex flex-col">
         <div className="p-6">
           <div className="flex items-center gap-2 mb-1">
             <Shield size={20} className="text-sidebar-primary" />
@@ -44,20 +46,30 @@ export default function AdminDashboard() {
           </div>
           <div className="mt-1">{roleBadge(role)}</div>
         </div>
-        <nav className="px-3">
+        <nav className="px-3 flex-1">
           {sidebarItems.map(item => (
             <button
               key={item.key}
               onClick={() => setActiveTab(item.key)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-1 ${
-                activeTab === item.key ? 'bg-sidebar-accent text-sidebar-primary' : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50'
-              }`}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mb-1 ${activeTab === item.key ? 'bg-sidebar-accent text-sidebar-primary' : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50'
+                }`}
             >
               <item.icon size={18} />
               {item.label}
             </button>
           ))}
         </nav>
+
+        <div className="p-4 border-t border-sidebar-border">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 text-sidebar-foreground/70 hover:text-destructive hover:bg-destructive/10"
+            onClick={() => navigate('/')}
+          >
+            <LogOut size={18} />
+            Logout
+          </Button>
+        </div>
       </aside>
 
       {/* Main Content */}

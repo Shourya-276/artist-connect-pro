@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { categories, genres, eventTypes, cities, languages } from '@/data/mockData';
+import { Plus, Trash2 } from 'lucide-react';
 
 export default function ArtistSignup() {
   const navigate = useNavigate();
@@ -11,6 +12,9 @@ export default function ArtistSignup() {
     fullName: '', phone: '', email: '', gender: '', languages: [] as string[], city: '', area: '',
     primaryCategory: '', genres: [] as string[], instruments: [] as string[], eventCategories: [] as string[],
     bio: '', instagram: '', youtube: '', facebook: '', website: '', travelNationwide: false,
+    budgetChart: [
+      { eventType: '', budgetRange: '10001-20000', price: 0 },
+    ],
   });
 
   const update = (field: string, value: any) => setForm(f => ({ ...f, [field]: value }));
@@ -31,11 +35,11 @@ export default function ArtistSignup() {
       <div className="container-wide max-w-2xl py-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="font-heading font-bold text-3xl text-foreground mb-2">Join as Artist</h1>
-          <p className="text-muted-foreground mb-8">Step {step} of 3</p>
+          <p className="text-muted-foreground mb-8">Step {step} of 4</p>
 
           {/* Progress Bar */}
           <div className="flex gap-2 mb-8">
-            {[1, 2, 3].map(s => (
+            {[1, 2, 3, 4].map(s => (
               <div key={s} className={`flex-1 h-1.5 rounded-full transition-all ${s <= step ? 'gradient-bg' : 'bg-border'}`} />
             ))}
           </div>
@@ -131,7 +135,101 @@ export default function ArtistSignup() {
           )}
 
           {step === 3 && (
-            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
+            <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+              <h3 className="font-heading font-semibold text-lg text-foreground">Event & Budget Chart</h3>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm text-muted-foreground">Define your pricing for different event types</p>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    update('budgetChart', [...form.budgetChart, { eventType: '', budgetRange: '10001-20000', price: 0 }]);
+                  }}
+                  className="h-8 px-2 border-primary/50 text-primary hover:bg-primary/5"
+                >
+                  <Plus size={16} className="mr-1" /> Add Event
+                </Button>
+              </div>
+              <div className="space-y-6">
+                {form.budgetChart.map((item, index) => (
+                  <div key={index} className="p-4 rounded-xl bg-secondary/50 border border-border space-y-4 relative group">
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <label className="text-xs font-medium text-muted-foreground mb-1 block">Event Name</label>
+                        <div className="flex gap-2">
+                          <input
+                            value={item.eventType}
+                            onChange={e => {
+                              const newChart = [...form.budgetChart];
+                              newChart[index].eventType = e.target.value;
+                              update('budgetChart', newChart);
+                            }}
+                            className="flex-1 h-10 px-3 rounded-lg bg-card text-foreground border border-border text-sm outline-none focus:ring-1 focus:ring-primary"
+                            placeholder="e.g. Wedding, Private Party, Concert"
+                          />
+                          {form.budgetChart.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                update('budgetChart', form.budgetChart.filter((_, i) => i !== index));
+                              }}
+                              className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-destructive transition-colors"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-medium text-muted-foreground mb-1 block">Budget Range</label>
+                        <select
+                          value={item.budgetRange}
+                          onChange={e => {
+                            const newChart = [...form.budgetChart];
+                            newChart[index].budgetRange = e.target.value;
+                            update('budgetChart', newChart);
+                          }}
+                          className="w-full h-10 px-3 rounded-lg bg-card text-foreground border border-border text-sm"
+                        >
+                          <option value="0-5000">0 - 5000</option>
+                          <option value="5001-10000">5001 - 10000</option>
+                          <option value="10001-20000">10001 - 20000</option>
+                          <option value="20001-50000">20001 - 50000</option>
+                          <option value="50001-100000">50001 - 100000</option>
+                          <option value="100000+">100000+</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-muted-foreground mb-1 block">Your Price (₹)</label>
+                        <input
+                          type="number"
+                          value={item.price}
+                          onChange={e => {
+                            const newChart = [...form.budgetChart];
+                            newChart[index].price = parseInt(e.target.value) || 0;
+                            update('budgetChart', newChart);
+                          }}
+                          className="w-full h-10 px-3 rounded-lg bg-card text-foreground border border-border text-xs"
+                          placeholder="Enter your price"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-3 mt-8">
+                <Button variant="outline" onClick={() => setStep(2)} className="flex-1 h-11 rounded-xl">Back</Button>
+                <Button onClick={() => setStep(4)} className="flex-1 h-11 rounded-xl">Continue</Button>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 4 && (
+            <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-4">
               <h3 className="font-heading font-semibold text-lg text-foreground">Social Links</h3>
               {['instagram', 'youtube', 'facebook', 'website'].map(field => (
                 <div key={field}>
@@ -140,13 +238,13 @@ export default function ArtistSignup() {
                 </div>
               ))}
               <div className="flex gap-3 mt-4">
-                <Button variant="outline" onClick={() => setStep(2)} className="flex-1 h-11 rounded-xl">Back</Button>
+                <Button variant="outline" onClick={() => setStep(3)} className="flex-1 h-11 rounded-xl">Back</Button>
                 <Button onClick={handleSubmit} className="flex-1 h-11 rounded-xl">Complete Signup</Button>
               </div>
             </motion.div>
           )}
         </motion.div>
       </div>
-    </div>
+    </div >
   );
 }

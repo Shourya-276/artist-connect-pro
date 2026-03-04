@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search, User, ChevronDown } from 'lucide-react';
+import { Menu, X, Search, User, ChevronDown, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+import logo from '@/assets/Live101 2025 Logo.png';
+
 const navLinks = [
-  { label: 'Browse Artists', href: '/search' },
+  { label: 'Home', href: '/' },
   { label: 'How It Works', href: '/how-it-works' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Contact', href: '/contact' },
 ];
 
 export default function Navbar() {
@@ -31,22 +32,14 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled || !isHome
-            ? 'glass shadow-sm'
-            : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled || !isHome
+          ? 'glass shadow-sm'
+          : 'bg-transparent'
+          }`}
       >
         <div className="container-wide flex items-center justify-between h-16 lg:h-18">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
-              <span className="text-sm font-bold text-primary-foreground">A</span>
-            </div>
-            <span className={`font-heading font-bold text-xl ${
-              !scrolled && isHome ? 'text-primary-foreground' : 'text-foreground'
-            }`}>
-              ArtistHub
-            </span>
+            <img src={logo} alt="Live101" className="h-10 w-auto" />
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
@@ -54,13 +47,12 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  location.pathname === link.href
-                    ? 'text-primary'
-                    : !scrolled && isHome
+                className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.href
+                  ? 'text-primary'
+                  : !scrolled && isHome
                     ? 'text-primary-foreground/80 hover:text-primary-foreground'
                     : 'text-muted-foreground'
-                }`}
+                  }`}
               >
                 {link.label}
               </Link>
@@ -69,22 +61,20 @@ export default function Navbar() {
 
           <div className="hidden lg:flex items-center gap-3">
             <Link to="/artist/signup">
-              <Button variant="ghost" size="sm" className={`${
-                !scrolled && isHome ? 'text-primary-foreground hover:bg-primary-foreground/10' : ''
-              }`}>
+              <Button variant="ghost" size="sm" className={`${!scrolled && isHome ? 'text-primary-foreground hover:bg-primary-foreground/10' : ''
+                }`}>
                 Join as Artist
               </Button>
             </Link>
-            <Link to="/client/signup">
-              <Button variant="default" size="sm">
-                Book Artists
+            <Link to="/admin/login">
+              <Button variant="outline" size="sm" className={`${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : ''
+                }`}>
+                Admin
               </Button>
             </Link>
-            <Link to="/admin">
-              <Button variant="outline" size="sm" className={`${
-                !scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : ''
-              }`}>
-                Admin
+            <Link to="/client/signup">
+              <Button variant="default" size="sm" className="flex items-center gap-2">
+                <LayoutDashboard size={16} /> Join as Event Planner
               </Button>
             </Link>
           </div>
@@ -121,7 +111,9 @@ export default function Navbar() {
                   <Button variant="outline" className="w-full">Join as Artist</Button>
                 </Link>
                 <Link to="/client/signup">
-                  <Button className="w-full">Book Artists</Button>
+                  <Button className="w-full flex items-center justify-center gap-2">
+                    <LayoutDashboard size={18} /> Join as Event Planner
+                  </Button>
                 </Link>
               </div>
             </div>

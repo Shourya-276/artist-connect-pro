@@ -4,6 +4,7 @@ import { Search, SlidersHorizontal, X, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { mockArtists, categories, genres, eventTypes, cities, languages, Artist } from '@/data/mockData';
 import ArtistCard from '@/components/artists/ArtistCard';
+import WeeklyTop10 from '@/components/trending/WeeklyTop10';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -126,6 +127,21 @@ export default function SearchPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Weekly Top 10 Contextual */}
+        {(filters.city || filters.category) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-12 p-6 rounded-2xl bg-primary/5 border border-primary/10"
+          >
+            <WeeklyTop10
+              city={filters.city}
+              category={filters.category}
+              title={`Weekly Top 10 ${filters.category ? filters.category : ''} ${filters.city ? 'in ' + filters.city : ''}`}
+            />
+          </motion.div>
+        )}
 
         {/* Results Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

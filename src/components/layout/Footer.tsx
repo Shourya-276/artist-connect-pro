@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 
+import logo from '@/assets/Live101 2025 Logo.png';
+
 const footerLinks = {
   Platform: [
-    { label: 'Browse Artists', href: '/search' },
+    { label: 'Home', href: '/' },
     { label: 'How It Works', href: '/how-it-works' },
     { label: 'Pricing', href: '/pricing' },
     { label: 'For Artists', href: '/artist/signup' },
@@ -28,10 +30,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
-                <span className="text-sm font-bold text-primary-foreground">A</span>
-              </div>
-              <span className="font-heading font-bold text-xl">ArtistHub</span>
+              <img src={logo} alt="Live101" className="h-10 w-auto brightness-0 invert" />
             </div>
             <p className="text-sm text-background/60 leading-relaxed">
               India's premier marketplace for booking artists for your events.
@@ -53,7 +52,7 @@ export default function Footer() {
           ))}
         </div>
         <div className="border-t border-background/10 mt-12 pt-8 text-center text-sm text-background/40">
-          © 2026 ArtistHub. All rights reserved.
+          © {new Date().getFullYear()} Live101. All rights reserved.
         </div>
       </div>
     </footer>

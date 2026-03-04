@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { categories, mockArtists, stats, testimonials } from '@/data/mockData';
 import ArtistCard from '@/components/artists/ArtistCard';
 import TrendingCarousel from '@/components/artists/TrendingCarousel';
+import WeeklyTop10 from '@/components/trending/WeeklyTop10';
 import heroBg from '@/assets/hero-bg.jpg';
 
 const containerVariants = {
@@ -32,18 +33,16 @@ export default function Index() {
             animate="visible"
             className="max-w-4xl mx-auto"
           >
-            <motion.p variants={itemVariants} className="text-accent font-semibold text-sm tracking-widest uppercase mb-4">
+            <motion.p variants={itemVariants} className="text-white font-semibold text-sm tracking-widest uppercase mb-4">
               India's #1 Artist Booking Platform
             </motion.p>
             <motion.h1
               variants={itemVariants}
-              className="font-heading font-bold text-4xl sm:text-5xl md:text-7xl text-primary-foreground leading-tight mb-6"
+              className="font-heading font-bold text-4xl sm:text-5xl md:text-7xl text-white leading-tight mb-6"
             >
-              Book Incredible Artists
-              <br />
-              <span className="gradient-text">For Your Events</span>
+              Book incredible live artists for your events
             </motion.h1>
-            <motion.p variants={itemVariants} className="text-lg sm:text-xl text-primary-foreground/70 mb-10 max-w-2xl mx-auto">
+            <motion.p variants={itemVariants} className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto">
               Discover singers, DJs, bands, comedians and more. From intimate parties to grand celebrations.
             </motion.p>
 
@@ -133,7 +132,12 @@ export default function Index() {
             </h2>
             <p className="text-muted-foreground">Most booked artists this week</p>
           </motion.div>
-          <TrendingCarousel title="🔥 Top Overall" artists={mockArtists} />
+
+          <div className="mb-16">
+            <WeeklyTop10 title="🏆 This Week's Top 10" />
+          </div>
+
+          <TrendingCarousel title="🔥 More Trending" artists={mockArtists} />
           <TrendingCarousel title="📍 Top in Mumbai" artists={mockArtists.filter(a => a.city === 'Mumbai').concat(mockArtists.slice(0, 3))} />
         </div>
       </section>
@@ -231,7 +235,7 @@ export default function Index() {
               Ready to Make Your Event Unforgettable?
             </h2>
             <p className="text-primary-foreground/80 mb-8 max-w-lg mx-auto">
-              Join thousands of event planners who trust ArtistHub.
+              Join thousands of event planners who trust Live101.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/search">

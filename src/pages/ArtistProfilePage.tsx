@@ -1,15 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
 import { Star, MapPin, BadgeCheck, Play, Heart, Share2, Calendar, Globe, Instagram, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { mockArtists } from '@/data/mockData';
+import { toast } from 'sonner';
 
 export default function ArtistProfilePage() {
   const { id } = useParams();
   const artist = mockArtists.find(a => a.id === id) || mockArtists[0];
   const [activeTab, setActiveTab] = useState<'about' | 'photos' | 'videos' | 'reviews'>('about');
   const [showContact, setShowContact] = useState(false);
+  const [isShortlisted, setIsShortlisted] = useState(false);
+
+  useEffect(() => {
+    const shortlisted = JSON.parse(localStorage.getItem('shortlistedArtists') || '[]');
+    setIsShortlisted(shortlisted.includes(artist.id));
+  }, [artist.id]);
+
+  const toggleShortlist = () => {
+    const shortlisted = JSON.parse(localStorage.getItem('shortlistedArtists') || '[]');
+    let newShortlisted;
+
+    if (isShortlisted) {
+      newShortlisted = shortlisted.filter((sid: string) => sid !== artist.id);
+      toast.info(`Removed ${artist.name} from shortlist`);
+    } else {
+      newShortlisted = [...shortlisted, artist.id];
+      toast.success(`Added ${artist.name} to shortlist`);
+    }
+
+    localStorage.setItem('shortlistedArtists', JSON.stringify(newShortlisted));
+    setIsShortlisted(!isShortlisted);
+    window.dispatchEvent(new Event('storage'));
+  };
 
   return (
     <div className="min-h-screen pt-16 bg-background">
@@ -47,7 +71,14 @@ export default function ArtistProfilePage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm"><Heart size={16} className="mr-1" /> Shortlist</Button>
+                    <Button
+                      variant={isShortlisted ? "secondary" : "outline"}
+                      size="sm"
+                      onClick={toggleShortlist}
+                    >
+                      <Heart size={16} className={`mr-1 ${isShortlisted ? 'fill-current' : ''}`} />
+                      {isShortlisted ? 'Shortlisted' : 'Shortlist'}
+                    </Button>
                     <Button variant="outline" size="sm"><Share2 size={16} /></Button>
                     <Button size="sm" onClick={() => setShowContact(true)}>Unlock Contact</Button>
                   </div>
@@ -66,9 +97,8 @@ export default function ArtistProfilePage() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-3 text-sm font-medium capitalize transition-colors relative ${
-                    activeTab === tab ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                  }`}
+                  className={`px-4 py-3 text-sm font-medium capitalize transition-colors relative ${activeTab === tab ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+                    }`}
                 >
                   {tab}
                   {activeTab === tab && (

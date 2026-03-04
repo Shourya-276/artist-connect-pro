@@ -20,6 +20,8 @@ import ContactPage from "./pages/ContactPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
+import ClientDashboard from "./pages/ClientDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,12 +39,14 @@ function AppContent() {
         <Route path="/artist/signup" element={<ArtistSignup />} />
         <Route path="/artist/dashboard" element={<ArtistDashboard />} />
         <Route path="/client/signup" element={<ClientSignup />} />
+        <Route path="/client/dashboard" element={<ClientDashboard />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
