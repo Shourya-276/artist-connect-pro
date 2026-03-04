@@ -7,7 +7,7 @@ const footerLinks = {
     { label: 'Home', href: '/' },
     { label: 'How It Works', href: '/how-it-works' },
     { label: 'Pricing', href: '/pricing' },
-    { label: 'For Artists', href: '/artist/signup' },
+    { label: 'Artist login', href: '/artist/login' },
   ],
   Company: [
     { label: 'About', href: '/about' },
@@ -30,7 +30,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <img src={logo} alt="Live101" className="h-10 w-auto brightness-0 invert" />
+              <img src={logo} alt="Live101" className="h-10 w-auto" />
             </div>
             <p className="text-sm text-background/60 leading-relaxed">
               India's premier marketplace for booking artists for your events.

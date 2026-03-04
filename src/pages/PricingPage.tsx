@@ -8,14 +8,8 @@ export default function PricingPage() {
     <div className="min-h-screen pt-20 bg-background">
       <div className="container-wide py-16">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-          <h1 className="font-heading font-bold text-4xl text-foreground mb-3">Simple, Transparent Pricing</h1>
-          <p className="text-muted-foreground max-w-md mx-auto">Choose the plan that fits your needs. Start with a 7-day free trial.</p>
-        </motion.div>
-
-        {/* Trial Banner */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="gradient-bg rounded-2xl p-6 text-center mb-12 max-w-2xl mx-auto">
-          <h3 className="font-heading font-bold text-xl text-primary-foreground mb-1">🎉 Start Your 7-Day Free Trial</h3>
-          <p className="text-primary-foreground/80 text-sm">No credit card required. Full access to all features.</p>
+          <h1 className="font-heading font-bold text-4xl text-foreground mb-3">Enterprise-Grade Artist Booking</h1>
+          <p className="text-muted-foreground max-w-md mx-auto">Choose a premium membership that fits your events scale and frequency. All plans include unlimited usage.</p>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -25,9 +19,8 @@ export default function PricingPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 + 0.2 }}
-              className={`bg-card rounded-2xl p-8 border-2 relative ${
-                plan.recommended ? 'border-primary card-elevated' : 'border-border'
-              }`}
+              className={`bg-card rounded-2xl p-8 border-2 relative ${plan.recommended ? 'border-primary card-elevated' : 'border-border'
+                }`}
             >
               {plan.recommended && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full gradient-bg text-xs font-semibold text-primary-foreground">

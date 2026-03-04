@@ -27,7 +27,7 @@ export default function ArtistSignup() {
     const existing = JSON.parse(localStorage.getItem('users') || '[]');
     existing.push({ ...form, type: 'artist', id: Date.now().toString(), createdAt: new Date().toISOString() });
     localStorage.setItem('users', JSON.stringify(existing));
-    navigate('/artist/dashboard');
+    navigate('/artist/login?registered=true');
   };
 
   return (

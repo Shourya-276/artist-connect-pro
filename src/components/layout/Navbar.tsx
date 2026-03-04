@@ -10,6 +10,7 @@ const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'How It Works', href: '/how-it-works' },
   { label: 'Pricing', href: '/pricing' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 export default function Navbar() {
@@ -39,7 +40,11 @@ export default function Navbar() {
       >
         <div className="container-wide flex items-center justify-between h-16 lg:h-18">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="Live101" className="h-10 w-auto" />
+            <img
+              src={logo}
+              alt="Live101"
+              className="h-14 lg:h-16 w-auto transition-transform hover:scale-105"
+            />
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
@@ -60,10 +65,10 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <Link to="/artist/signup">
+            <Link to="/artist/login">
               <Button variant="ghost" size="sm" className={`${!scrolled && isHome ? 'text-primary-foreground hover:bg-primary-foreground/10' : ''
                 }`}>
-                Join as Artist
+                Artist login
               </Button>
             </Link>
             <Link to="/admin/login">
@@ -72,9 +77,9 @@ export default function Navbar() {
                 Admin
               </Button>
             </Link>
-            <Link to="/client/signup">
+            <Link to="/client/login">
               <Button variant="default" size="sm" className="flex items-center gap-2">
-                <LayoutDashboard size={16} /> Join as Event Planner
+                <LayoutDashboard size={16} /> Client login
               </Button>
             </Link>
           </div>
@@ -107,12 +112,12 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="flex flex-col gap-3 pt-4">
-                <Link to="/artist/signup">
-                  <Button variant="outline" className="w-full">Join as Artist</Button>
+                <Link to="/artist/login">
+                  <Button variant="outline" className="w-full">Artist login</Button>
                 </Link>
-                <Link to="/client/signup">
+                <Link to="/client/login">
                   <Button className="w-full flex items-center justify-center gap-2">
-                    <LayoutDashboard size={18} /> Join as Event Planner
+                    <LayoutDashboard size={18} /> Client login
                   </Button>
                 </Link>
               </div>

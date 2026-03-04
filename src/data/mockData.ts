@@ -93,9 +93,9 @@ export const mockArtists: Artist[] = [
 ];
 
 export const stats = [
-  { label: 'Artists', value: '10,000+' },
-  { label: 'Events Done', value: '25,000+' },
-  { label: 'Cities', value: '150+' },
+  { label: 'Artists', value: '20,000+' },
+  { label: 'Gigs Done', value: '20,000+' },
+  { label: 'Cities', value: '50+' },
   { label: 'Happy Clients', value: '15,000+' },
 ];
 
@@ -106,9 +106,27 @@ export const testimonials = [
 ];
 
 export const pricingPlans = [
-  { name: 'Basic', price: '₹999', period: '/month', features: ['5 artist contacts/month', 'Basic search filters', 'Email support', 'Event posting'], recommended: false },
-  { name: 'Pro', price: '₹2,499', period: '/month', features: ['25 artist contacts/month', 'Advanced filters', 'Priority support', 'Shortlist management', 'Event analytics'], recommended: true },
-  { name: 'Premium', price: '₹4,999', period: '/month', features: ['Unlimited contacts', 'All filters + AI match', 'Dedicated manager', 'Bulk booking', 'Custom contracts', 'API access'], recommended: false },
+  {
+    name: 'Silver',
+    price: '₹25,000',
+    period: '/Quarterly',
+    features: ['Unlimited Usage', 'Data updated Quarterly', 'Verified Artist', 'Dedicated Support'],
+    recommended: false
+  },
+  {
+    name: 'Gold',
+    price: '₹50,000',
+    period: '/6 Months',
+    features: ['Unlimited Usage', 'Data updated Quarterly', 'Verified Artist', 'Priority Matching', 'Featured Profile'],
+    recommended: true
+  },
+  {
+    name: 'Platinum',
+    price: '₹1,00,000',
+    period: '/Yearly',
+    features: ['Unlimited Usage', 'Data updated Quarterly', 'Verified Artist', 'Premium Account Manager', 'Custom Contracts', 'API Access'],
+    recommended: false
+  },
 ];
 
 // Initialize localStorage with mock data if empty

@@ -11,8 +11,10 @@ import Index from "./pages/Index";
 import SearchPage from "./pages/SearchPage";
 import ArtistProfilePage from "./pages/ArtistProfilePage";
 import ArtistSignup from "./pages/ArtistSignup";
+import ArtistLogin from "./pages/ArtistLogin";
 import ArtistDashboard from "./pages/ArtistDashboard";
 import ClientSignup from "./pages/ClientSignup";
+import ClientLogin from "./pages/ClientLogin";
 import PricingPage from "./pages/PricingPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
@@ -37,8 +39,10 @@ function AppContent() {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/artist/:id" element={<ArtistProfilePage />} />
         <Route path="/artist/signup" element={<ArtistSignup />} />
+        <Route path="/artist/login" element={<ArtistLogin />} />
         <Route path="/artist/dashboard" element={<ArtistDashboard />} />
         <Route path="/client/signup" element={<ClientSignup />} />
+        <Route path="/client/login" element={<ClientLogin />} />
         <Route path="/client/dashboard" element={<ClientDashboard />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
