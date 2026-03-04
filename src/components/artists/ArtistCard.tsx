@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, MapPin, Heart, BadgeCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Artist } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { useShortlist } from '@/hooks/use-shortlist';
 
 interface ArtistCardProps {
   artist: Artist;
@@ -12,36 +11,7 @@ interface ArtistCardProps {
 }
 
 export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
-  const [isShortlisted, setIsShortlisted] = useState(false);
-
-  useEffect(() => {
-    const shortlisted = JSON.parse(localStorage.getItem('shortlistedArtists') || '[]');
-    setIsShortlisted(shortlisted.includes(artist.id));
-  }, [artist.id]);
-
-  const toggleShortlist = (e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-
-    const shortlisted = JSON.parse(localStorage.getItem('shortlistedArtists') || '[]');
-    let newShortlisted;
-
-    if (isShortlisted) {
-      newShortlisted = shortlisted.filter((id: string) => id !== artist.id);
-      toast.info(`Removed ${artist.name} from shortlist`);
-    } else {
-      newShortlisted = [...shortlisted, artist.id];
-      toast.success(`Added ${artist.name} to shortlist`);
-    }
-
-    localStorage.setItem('shortlistedArtists', JSON.stringify(newShortlisted));
-    setIsShortlisted(!isShortlisted);
-
-    // Trigger storage event for other components to update if needed
-    window.dispatchEvent(new Event('storage'));
-  };
+  const { isShortlisted, toggleShortlist } = useShortlist(artist.id, artist.name);
 
   return (
     <motion.div

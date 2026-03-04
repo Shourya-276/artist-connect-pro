@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { initializeMockData } from "@/data/mockData";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 import Index from "./pages/Index";
 import SearchPage from "./pages/SearchPage";
 import ArtistProfilePage from "./pages/ArtistProfilePage";
@@ -65,6 +66,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <AppContent />
       </BrowserRouter>
     </TooltipProvider>
