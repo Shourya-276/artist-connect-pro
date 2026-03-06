@@ -35,7 +35,7 @@ export default function Hero() {
                         variants={itemVariants}
                         className="font-heading font-bold text-4xl sm:text-5xl md:text-7xl text-white leading-tight mb-6"
                     >
-                        Book incredible live artists for your events
+                        Book live artists for your events
                     </motion.h1>
                     <motion.p variants={itemVariants} className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto">
                         Discover singers, DJs, bands, comedians and more. From intimate parties to grand celebrations.
