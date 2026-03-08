@@ -24,10 +24,10 @@ export default function Index() {
             className="text-center mb-12"
           >
             <h2 className="font-heading font-bold text-3xl sm:text-4xl text-foreground mb-3">
-              Browse by Category
+              Browse By Category
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto">
-              Find the perfect artist for any occasion
+              Find The Perfect Artist For Any Occasion
             </p>
           </motion.div>
 
@@ -67,15 +67,15 @@ export default function Index() {
             <h2 className="font-heading font-bold text-3xl sm:text-4xl text-foreground mb-3">
               Trending Artists
             </h2>
-            <p className="text-muted-foreground">Most booked artists this week</p>
+            <p className="text-muted-foreground">Most Booked Artists This Week</p>
           </motion.div>
 
           <div className="mb-16">
             <WeeklyTop10 title="🏆 This Week's Top 10" />
           </div>
 
-          <TrendingCarousel title="🔥 More Trending" artists={mockArtists} />
-          <TrendingCarousel title="📍 Top in Mumbai" artists={mockArtists.filter(a => a.city === 'Mumbai').concat(mockArtists.slice(0, 3))} />
+          <TrendingCarousel title="📈 Trending This Week" artists={mockArtists} />
+          <TrendingCarousel title="📍 Top In Mumbai" artists={mockArtists.filter(a => a.city === 'Mumbai').concat(mockArtists.slice(0, 3))} />
         </div>
       </section>
 
@@ -94,9 +94,9 @@ export default function Index() {
           </motion.div>
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { icon: Search, title: 'Search & Filter', desc: 'Browse thousands of artists by category, city, budget, and more.' },
-              { icon: Users, title: 'Compare & Shortlist', desc: 'View profiles, watch videos, read reviews and shortlist favorites.' },
-              { icon: Music, title: 'Book & Celebrate', desc: 'Connect with artists, finalize details, and enjoy your event!' },
+              { icon: Search, title: 'Search & Filter', desc: 'Browse Thousands Of Artists By Category, City, Budget, And More.' },
+              { icon: Users, title: 'Compare & Shortlist', desc: 'View Profiles, Watch Videos, Read Reviews And Shortlist Favorites.' },
+              { icon: Music, title: 'Book & Celebrate', desc: 'Connect With Artists, Finalize Details, And Enjoy Your Event!' },
             ].map((step, i) => (
               <motion.div
                 key={i}
@@ -132,10 +132,10 @@ export default function Index() {
             className="gradient-bg rounded-2xl p-10 sm:p-16 text-center"
           >
             <h2 className="font-heading font-bold text-3xl sm:text-4xl text-primary-foreground mb-4">
-              Ready to Make Your Event Unforgettable?
+              Ready To Make Your Event Unforgettable?
             </h2>
             <p className="text-primary-foreground/80 mb-8 max-w-lg mx-auto">
-              Join thousands of event planners who trust Live101.
+              Join Thousands Of Event Planners Who Trust Live101.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/search">

@@ -6,8 +6,8 @@ const footerLinks = {
   Platform: [
     { label: 'Home', href: '/' },
     { label: 'How It Works', href: '/how-it-works' },
-    { label: 'Pricing', href: '/pricing' },
-    { label: 'Artist login', href: '/artist/login' },
+    { label: 'Subscription', href: '/pricing' },
+    { label: 'Artist Login', href: '/artist/login' },
   ],
   Company: [
     { label: 'About', href: '/about' },

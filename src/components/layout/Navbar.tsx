@@ -9,7 +9,7 @@ import logo from '@/assets/Live101 2025 Logo.png';
 const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'How It Works', href: '/how-it-works' },
-  { label: 'Pricing', href: '/pricing' },
+  { label: 'Subscription', href: '/pricing' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -53,8 +53,8 @@ export default function Navbar() {
                 key={link.href}
                 to={link.href}
                 className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.href
-                  ? 'text-primary'
-                  : !scrolled && isHome
+                  ? link.label === 'Home' && !scrolled && isHome ? 'text-white' : 'text-primary'
+                  : link.label === 'Home' && !scrolled && isHome ? 'text-white' : !scrolled && isHome
                     ? 'text-primary-foreground/80 hover:text-primary-foreground'
                     : 'text-muted-foreground'
                   }`}
@@ -66,9 +66,8 @@ export default function Navbar() {
 
           <div className="hidden lg:flex items-center gap-3">
             <Link to="/artist/login">
-              <Button variant="ghost" size="sm" className={`${!scrolled && isHome ? 'text-primary-foreground hover:bg-primary-foreground/10' : ''
-                }`}>
-                Artist login
+              <Button variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                Artist Login
               </Button>
             </Link>
             <Link to="/admin/login">
@@ -78,8 +77,8 @@ export default function Navbar() {
               </Button>
             </Link>
             <Link to="/client/login">
-              <Button variant="default" size="sm" className="flex items-center gap-2">
-                <LayoutDashboard size={16} /> Client login
+              <Button variant="default" size="sm" className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                <LayoutDashboard size={16} /> Client Login
               </Button>
             </Link>
           </div>
@@ -113,11 +112,11 @@ export default function Navbar() {
               ))}
               <div className="flex flex-col gap-3 pt-4">
                 <Link to="/artist/login">
-                  <Button variant="outline" className="w-full">Artist login</Button>
+                  <Button variant="default" className="w-full bg-primary text-primary-foreground">Artist Login</Button>
                 </Link>
                 <Link to="/client/login">
-                  <Button className="w-full flex items-center justify-center gap-2">
-                    <LayoutDashboard size={18} /> Client login
+                  <Button variant="default" className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground">
+                    <LayoutDashboard size={18} /> Client Login
                   </Button>
                 </Link>
               </div>

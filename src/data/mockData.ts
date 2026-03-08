@@ -100,9 +100,9 @@ export const stats = [
 ];
 
 export const testimonials = [
-  { name: 'Anita Sharma', role: 'Event Manager, TCS', text: 'Found the perfect band for our annual event. Seamless experience!', rating: 5 },
-  { name: 'Rohit Mehra', role: 'Wedding Planner', text: 'Best platform for finding quality artists. Highly recommended!', rating: 5 },
-  { name: 'Sneha Patel', role: 'College Fest Coordinator', text: 'Booked 5 artists for our fest. Amazing variety and quality.', rating: 4 },
+  { name: 'Anita Sharma', role: 'Event Manager, TCS', text: 'Found The Perfect Band For Our Annual Event. Seamless Experience!', rating: 5 },
+  { name: 'Rohit Mehra', role: 'Wedding Planner', text: 'Best Platform For Finding Quality Artists. Highly Recommended!', rating: 5 },
+  { name: 'Sneha Patel', role: 'College Fest Coordinator', text: 'Booked 5 Artists For Our Fest. Amazing Variety And Quality.', rating: 4 },
 ];
 
 export const pricingPlans = [
