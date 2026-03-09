@@ -38,7 +38,7 @@ export default function Hero() {
                         Book Live Artist For Events
                     </motion.h1>
                     <motion.p variants={itemVariants} className="text-lg sm:text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-                        Discover Singers, DJs, Bands, Comedians And More. For Corporates, Event Planners & Private Events.
+                        Explore Live Singers, DJs, Comedians, Motivational Speakers And More For Big Celebrations As Well As Private Gatherings.
                     </motion.p>
 
                     <motion.div
