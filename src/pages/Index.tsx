@@ -47,7 +47,7 @@ export default function Index() {
                 >
                   <span className="text-4xl mb-3 block">{cat.icon}</span>
                   <h3 className="font-heading font-semibold text-card-foreground">{cat.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{cat.count.toLocaleString()} artists</p>
+                  <p className="text-sm text-muted-foreground mt-1">{cat.count.toLocaleString()} Artists</p>
                 </Link>
               </motion.div>
             ))}
@@ -145,7 +145,7 @@ export default function Index() {
               </Link>
               <Link to="/artist/signup">
                 <Button size="lg" variant="outline" className="rounded-xl px-8 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
-                  Join as Artist
+                  Join As Artist
                 </Button>
               </Link>
             </div>

@@ -4,8 +4,6 @@ import { Button } from '@/components/ui/button';
 import { pricingPlans } from '@/data/mockData';
 
 export default function SubscriptionPage() {
-  const subPlans = pricingPlans.filter(p => p.name === 'Silver' || p.name === 'Gold');
-
   return (
     <div className="min-h-screen pt-20 bg-background">
       <div className="container-wide py-16">
@@ -14,18 +12,18 @@ export default function SubscriptionPage() {
           <p className="text-muted-foreground max-w-md mx-auto">Choose A Premium Membership That Fits Your Event's Scale And Frequency. All Plans Include Unlimited Usage.</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {subPlans.map((plan, i) => (
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {pricingPlans.map((plan, i) => (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 + 0.2 }}
-              className={`bg-white rounded-2xl p-8 border-2 relative transition-all duration-300 ${plan.recommended ? 'border-primary shadow-xl scale-105' : 'border-border shadow-sm'
+              className={`bg-white rounded-2xl p-8 border-2 relative transition-all duration-300 flex flex-col ${plan.recommended ? 'border-primary shadow-xl scale-105 z-10' : 'border-border shadow-sm'
                 }`}
             >
               {plan.recommended && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-[10px] uppercase tracking-wider font-bold text-white">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-[10px] uppercase tracking-wider font-bold text-white whitespace-nowrap">
                   Most Popular
                 </div>
               )}
@@ -37,7 +35,7 @@ export default function SubscriptionPage() {
                 <span className="text-black/60 text-sm ml-1 font-medium">{plan.period}</span>
               </div>
 
-              <ul className="space-y-4 mb-10">
+              <ul className="space-y-4 mb-10 flex-1">
                 {plan.features.map(f => (
                   <li key={f} className="flex items-center gap-3 text-sm text-black font-medium">
                     <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">

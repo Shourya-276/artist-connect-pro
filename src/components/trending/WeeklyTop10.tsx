@@ -40,7 +40,7 @@ export default function WeeklyTop10({ city, category, title }: WeeklyTop10Props)
                     </h2>
                     <p className="text-muted-foreground text-sm flex items-center gap-1.5 mt-1">
                         <TrendingUp size={14} className="text-primary" />
-                        Trending based on bookings and views this week
+                        Trending Based On Bookings And Views This Week
                     </p>
                 </div>
                 <div className="hidden sm:block">

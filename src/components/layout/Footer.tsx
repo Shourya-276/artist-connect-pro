@@ -33,7 +33,7 @@ export default function Footer() {
               <img src={logo} alt="Live101" className="h-10 w-auto" />
             </div>
             <p className="text-sm text-background/60 leading-relaxed">
-              India's premier marketplace for booking artists for your events.
+              India's Premier Marketplace For Booking Artists For Your Events.
             </p>
           </div>
           {Object.entries(footerLinks).map(([title, links]) => (
