@@ -26,14 +26,14 @@ export default function Hero() {
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-4xl mx-auto"
+                    className="max-w-5xl mx-auto"
                 >
                     <motion.p variants={itemVariants} className="text-white font-semibold text-sm tracking-widest uppercase mb-4">
                         India's #1 Artist Booking Platform
                     </motion.p>
                     <motion.h1
                         variants={itemVariants}
-                        className="font-heading font-bold text-4xl sm:text-5xl md:text-7xl text-white leading-tight mb-6"
+                        className="font-heading font-bold text-3xl sm:text-5xl md:text-7xl text-white leading-tight mb-6 whitespace-nowrap"
                     >
                         Book Live Artist For Events
                     </motion.h1>
