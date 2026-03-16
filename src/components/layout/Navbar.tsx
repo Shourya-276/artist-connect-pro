@@ -65,15 +65,15 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <Link to="/artist/login">
-              <Button variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Artist Login
-              </Button>
-            </Link>
             <Link to="/admin/login">
               <Button variant="outline" size="sm" className={`${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : ''
                 }`}>
                 Admin
+              </Button>
+            </Link>
+            <Link to="/artist/login">
+              <Button variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                Artist Login
               </Button>
             </Link>
             <Link to="/client/login">
@@ -111,6 +111,9 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="flex flex-col gap-3 pt-4">
+                <Link to="/admin/login">
+                  <Button variant="outline" className="w-full">Admin Login</Button>
+                </Link>
                 <Link to="/artist/login">
                   <Button variant="default" className="w-full bg-primary text-primary-foreground">Artist Login</Button>
                 </Link>

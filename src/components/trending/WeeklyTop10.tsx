@@ -45,7 +45,7 @@ export default function WeeklyTop10({ city, category, title }: WeeklyTop10Props)
                 </div>
                 <div className="hidden sm:block">
                     <Link to="/search">
-                        <Button variant="outline" size="sm" className="rounded-full">View All Artists</Button>
+                        <Button variant="default" size="sm" className="rounded-full shadow-lg shadow-primary/20">View All Artists</Button>
                     </Link>
                 </div>
             </div>

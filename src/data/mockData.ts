@@ -93,10 +93,9 @@ export const mockArtists: Artist[] = [
 ];
 
 export const stats = [
-  { label: 'Artists', value: '20,000+' },
-  { label: 'Gigs Done', value: '20,000+' },
+  { label: 'Bookings', value: '20,000+' },
+  { label: 'Live Entertainers', value: '15,000+' },
   { label: 'Cities', value: '50+' },
-  { label: 'Happy Clients', value: '15,000+' },
 ];
 
 export const testimonials = [

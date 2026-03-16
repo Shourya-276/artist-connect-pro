@@ -54,26 +54,29 @@ export default function Hero() {
                             />
                         </div>
                         <Link to="/search">
-                            <Button size="lg" className="h-12 px-8 rounded-xl w-full sm:w-auto bg-primary hover:bg-primary/90 text-white">
+                            <Button size="lg" className="h-12 px-8 rounded-xl w-full sm:w-auto bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20">
                                 Explore <ArrowRight size={18} className="ml-2" />
                             </Button>
                         </Link>
                     </motion.div>
 
-                    <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-12 border-t border-white/10 pt-8">
-                        <div className="text-center">
-                            <div className="text-4xl font-heading font-bold text-white mb-1">20K+</div>
-                            <div className="text-sm uppercase tracking-wider text-white/60 font-medium">Verified Artists</div>
+                    <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-10 md:gap-24 border-t border-white/10 pt-12">
+                        <div className="text-center flex flex-col items-center min-w-[140px]">
+                            <div className="text-5xl md:text-6xl font-heading font-bold text-white mb-4 tracking-tight">20000+</div>
+                            <div className="w-full h-[3px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                            <div className="text-2xl md:text-3xl text-white font-light tracking-wide">Bookings</div>
                         </div>
-                        <div className="hidden sm:block w-px h-12 bg-white/10 self-center" />
-                        <div className="text-center">
-                            <div className="text-4xl font-heading font-bold text-white mb-1">50+</div>
-                            <div className="text-sm uppercase tracking-wider text-white/60 font-medium">Cities Covered</div>
+                        <div className="text-center flex flex-col items-center min-w-[140px]">
+                            <div className="text-5xl md:text-6xl font-heading font-bold text-white mb-4 tracking-tight">15000+</div>
+                            <div className="w-full h-[3px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                            <div className="text-2xl md:text-3xl text-white font-light tracking-wide leading-tight">
+                                Live<br />Entertainers
+                            </div>
                         </div>
-                        <div className="hidden sm:block w-px h-12 bg-white/10 self-center" />
-                        <div className="text-center">
-                            <div className="text-4xl font-heading font-bold text-white mb-1">20,000+</div>
-                            <div className="text-sm uppercase tracking-wider text-white/60 font-medium">Events Managed</div>
+                        <div className="text-center flex flex-col items-center min-w-[140px]">
+                            <div className="text-5xl md:text-6xl font-heading font-bold text-white mb-4 tracking-tight">50+</div>
+                            <div className="w-full h-[3px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                            <div className="text-2xl md:text-3xl text-white font-light tracking-wide">Cities</div>
                         </div>
                     </motion.div>
                 </motion.div>

@@ -48,9 +48,9 @@ export default function SearchPage() {
             />
           </div>
           <Button
-            variant="outline"
+            variant="default"
             onClick={() => setShowFilters(!showFilters)}
-            className="h-12 px-4 rounded-xl"
+            className="h-12 px-6 rounded-xl shadow-lg shadow-primary/20"
           >
             <SlidersHorizontal size={18} className="mr-2" />
             Filters

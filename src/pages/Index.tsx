@@ -139,7 +139,7 @@ export default function Index() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/search">
-                <Button size="lg" variant="secondary" className="rounded-xl px-8">
+                <Button size="lg" variant="default" className="rounded-xl px-8 shadow-lg shadow-primary/20">
                   Browse Artists
                 </Button>
               </Link>
