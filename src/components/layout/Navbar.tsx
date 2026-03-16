@@ -52,8 +52,8 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.href
-                  ? link.label === 'Home' && !scrolled && isHome ? 'text-white' : 'text-primary'
+                className={`text-sm font-medium transition-colors hover:text-red-600 ${location.pathname === link.href
+                  ? link.label === 'Home' && !scrolled && isHome ? 'text-white' : 'text-red-600'
                   : link.label === 'Home' && !scrolled && isHome ? 'text-white' : !scrolled && isHome
                     ? 'text-primary-foreground/80 hover:text-primary-foreground'
                     : 'text-muted-foreground'
@@ -66,18 +66,18 @@ export default function Navbar() {
 
           <div className="hidden lg:flex items-center gap-3">
             <Link to="/admin/login">
-              <Button variant="outline" size="sm" className={`${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : ''
+              <Button variant="outline" size="sm" className={`hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : ''
                 }`}>
                 Admin
               </Button>
             </Link>
             <Link to="/artist/login">
-              <Button variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700">
                 Artist Login
               </Button>
             </Link>
             <Link to="/client/login">
-              <Button variant="default" size="sm" className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button variant="default" size="sm" className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700">
                 <LayoutDashboard size={16} /> Client Login
               </Button>
             </Link>
@@ -112,13 +112,13 @@ export default function Navbar() {
               ))}
               <div className="flex flex-col gap-3 pt-4">
                 <Link to="/admin/login">
-                  <Button variant="outline" className="w-full">Admin Login</Button>
+                  <Button variant="outline" className="w-full hover:bg-red-600 hover:text-white hover:border-red-600">Admin Login</Button>
                 </Link>
                 <Link to="/artist/login">
-                  <Button variant="default" className="w-full bg-primary text-primary-foreground">Artist Login</Button>
+                  <Button variant="default" className="w-full bg-red-600 text-white">Artist Login</Button>
                 </Link>
                 <Link to="/client/login">
-                  <Button variant="default" className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground">
+                  <Button variant="default" className="w-full flex items-center justify-center gap-2 bg-red-600 text-white">
                     <LayoutDashboard size={18} /> Client Login
                   </Button>
                 </Link>

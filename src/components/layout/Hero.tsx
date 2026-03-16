@@ -54,7 +54,7 @@ export default function Hero() {
                             />
                         </div>
                         <Link to="/search">
-                            <Button size="lg" className="h-12 px-8 rounded-xl w-full sm:w-auto bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20">
+                            <Button size="lg" className="h-12 px-8 rounded-xl w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/20">
                                 Explore <ArrowRight size={18} className="ml-2" />
                             </Button>
                         </Link>

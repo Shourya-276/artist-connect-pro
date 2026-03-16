@@ -71,11 +71,11 @@ export default function Index() {
           </motion.div>
 
           <div className="mb-16">
-            <WeeklyTop10 title="🏆 This Week's Top 10" />
+            <WeeklyTop10 title="Trending Artists" />
           </div>
 
           <TrendingCarousel title="📈 Trending This Week" artists={mockArtists} />
-          <TrendingCarousel title="📍 Top In Mumbai" artists={mockArtists.filter(a => a.city === 'Mumbai').concat(mockArtists.slice(0, 3))} />
+          <TrendingCarousel title="💰 Top Sellers" artists={[...mockArtists].sort((a, b) => b.bookings - a.bookings)} />
         </div>
       </section>
 
