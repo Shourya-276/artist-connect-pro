@@ -58,22 +58,6 @@ export default function Index() {
       {/* Trending Artists */}
       <section className="section-padding bg-secondary/50">
         <div className="container-wide">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="font-heading font-bold text-3xl sm:text-4xl text-foreground mb-3">
-              Trending Artists
-            </h2>
-            <p className="text-muted-foreground">Most Booked Artists This Week</p>
-          </motion.div>
-
-          <div className="mb-16">
-            <WeeklyTop10 title="Trending Artists" />
-          </div>
-
           <TrendingCarousel title="📈 Trending This Week" artists={mockArtists} />
           <TrendingCarousel title="💰 Top Sellers" artists={[...mockArtists].sort((a, b) => b.bookings - a.bookings)} />
         </div>
