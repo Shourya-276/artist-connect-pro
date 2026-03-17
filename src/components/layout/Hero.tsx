@@ -62,21 +62,21 @@ export default function Hero() {
 
                     <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-10 md:gap-24 border-t border-white/10 pt-12">
                         <div className="text-center flex flex-col items-center min-w-[140px]">
-                            <div className="text-5xl md:text-6xl font-heading font-bold text-white mb-4 tracking-tight">20000+</div>
-                            <div className="w-full h-[3px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
-                            <div className="text-2xl md:text-3xl text-white font-light tracking-wide">Bookings</div>
+                            <div className="text-4xl md:text-5xl font-heading font-bold text-white mb-4 tracking-tight">20000+</div>
+                            <div className="w-full h-[2px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                            <div className="text-xl md:text-2xl text-white font-light tracking-wide">Bookings</div>
                         </div>
                         <div className="text-center flex flex-col items-center min-w-[140px]">
-                            <div className="text-5xl md:text-6xl font-heading font-bold text-white mb-4 tracking-tight">15000+</div>
-                            <div className="w-full h-[3px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
-                            <div className="text-2xl md:text-3xl text-white font-light tracking-wide leading-tight">
+                            <div className="text-4xl md:text-5xl font-heading font-bold text-white mb-4 tracking-tight">15000+</div>
+                            <div className="w-full h-[2px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                            <div className="text-xl md:text-2xl text-white font-light tracking-wide leading-tight">
                                 Live<br />Entertainers
                             </div>
                         </div>
                         <div className="text-center flex flex-col items-center min-w-[140px]">
-                            <div className="text-5xl md:text-6xl font-heading font-bold text-white mb-4 tracking-tight">50+</div>
-                            <div className="w-full h-[3px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
-                            <div className="text-2xl md:text-3xl text-white font-light tracking-wide">Cities</div>
+                            <div className="text-4xl md:text-5xl font-heading font-bold text-white mb-4 tracking-tight">50+</div>
+                            <div className="w-full h-[2px] bg-white mb-5 shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+                            <div className="text-xl md:text-2xl text-white font-light tracking-wide">Cities</div>
                         </div>
                     </motion.div>
                 </motion.div>
