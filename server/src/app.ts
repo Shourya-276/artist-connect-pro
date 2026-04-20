@@ -24,9 +24,9 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 
-// Explicitly allow your frontend origin
+// Explicitly allow all origins for deployment testing
 app.use(cors({
-  origin: ['http://localhost:8080', 'http://localhost:5173', 'http://localhost:8081'], // Added common dev ports
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
