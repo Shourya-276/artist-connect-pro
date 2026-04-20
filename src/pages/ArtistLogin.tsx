@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -24,23 +24,35 @@ export default function ArtistLogin() {
         }
     }, [location]);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
-        // Simulate login delay
-        setTimeout(() => {
-            if (email === 'artist@gmail.com' && password === '123') {
-                toast.success('Login successful!');
-                localStorage.setItem('currentUser', JSON.stringify({ email, type: 'artist' }));
-                navigate('/artist/dashboard');
-            } else {
-                toast.error('Invalid email or password', {
-                    description: 'Please use artist@gmail.com and 123'
-                });
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Login failed');
             }
+
+            const data = await response.json();
+            toast.success('Login successful!');
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            navigate('/artist/dashboard');
+        } catch (error: any) {
+            toast.error(error.message);
+        } finally {
             setIsLoading(false);
-        }, 800);
+        }
     };
 
     return (

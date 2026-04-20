@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, SlidersHorizontal, X, MapPin } from 'lucide-react';
+import { Search, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { mockArtists, categories, genres, eventTypes, cities, languages, Artist } from '@/data/mockData';
 import ArtistCard from '@/components/artists/ArtistCard';
 import WeeklyTop10 from '@/components/trending/WeeklyTop10';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -14,15 +15,24 @@ export default function SearchPage() {
     budgetMin: '', budgetMax: '', travel: false,
   });
 
-  const artists = useMemo(() => {
-    let result = [...mockArtists, ...mockArtists.map(a => ({ ...a, id: a.id + '-dup' }))]; // Duplicate for demo
-    if (query) result = result.filter(a => a.name.toLowerCase().includes(query.toLowerCase()) || a.category.toLowerCase().includes(query.toLowerCase()));
-    if (filters.category) result = result.filter(a => a.category.toLowerCase() === filters.category.toLowerCase());
-    if (filters.city) result = result.filter(a => a.city === filters.city);
-    if (filters.genre) result = result.filter(a => a.genres.includes(filters.genre));
-    if (filters.travel) result = result.filter(a => a.travelNationwide);
-    return result;
-  }, [query, filters]);
+  // Fetch Metadata (Categories, Cities, Genres)
+  const { data: metadata } = useQuery({
+    queryKey: ['metadata'],
+    queryFn: () => apiFetch('/api/metadata'),
+  });
+
+  // Fetch Artists based on query and filters
+  const { data: artists = [], isLoading } = useQuery({
+    queryKey: ['artists', query, filters],
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (query) params.append('search', query);
+      if (filters.category) params.append('category', filters.category);
+      if (filters.city) params.append('city', filters.city);
+      if (filters.genre) params.append('genre', filters.genre);
+      return apiFetch(`/api/artists?${params.toString()}`);
+    },
+  });
 
   const clearFilters = () => setFilters({ category: '', genre: '', city: '', eventType: '', language: '', budgetMin: '', budgetMax: '', travel: false });
 
@@ -75,7 +85,7 @@ export default function SearchPage() {
                     className="w-full h-10 rounded-lg bg-secondary text-foreground border border-border px-3 text-sm"
                   >
                     <option value="">All Categories</option>
-                    {categories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+                    {metadata?.categories?.map((c: any) => <option key={c.id} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
                 <div>
@@ -86,7 +96,7 @@ export default function SearchPage() {
                     className="w-full h-10 rounded-lg bg-secondary text-foreground border border-border px-3 text-sm"
                   >
                     <option value="">All Cities</option>
-                    {cities.map(c => <option key={c} value={c}>{c}</option>)}
+                    {metadata?.cities?.map((c: any) => <option key={c.id} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
                 <div>
@@ -97,7 +107,7 @@ export default function SearchPage() {
                     className="w-full h-10 rounded-lg bg-secondary text-foreground border border-border px-3 text-sm"
                   >
                     <option value="">All Genres</option>
-                    {genres.map(g => <option key={g} value={g}>{g}</option>)}
+                    {metadata?.genres?.map((g: any) => <option key={g.id} value={g.name}>{g.name}</option>)}
                   </select>
                 </div>
                 <div>
@@ -108,7 +118,7 @@ export default function SearchPage() {
                     className="w-full h-10 rounded-lg bg-secondary text-foreground border border-border px-3 text-sm"
                   >
                     <option value="">All Events</option>
-                    {eventTypes.map(e => <option key={e} value={e}>{e}</option>)}
+                    {metadata?.eventTypes?.map((e: any) => <option key={e} value={e}>{e}</option>)}
                   </select>
                 </div>
               </div>
@@ -128,29 +138,21 @@ export default function SearchPage() {
           )}
         </AnimatePresence>
 
-        {/* Weekly Top 10 Contextual */}
-        {(filters.city || filters.category) && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-12 p-6 rounded-2xl bg-primary/5 border border-primary/10"
-          >
-            <WeeklyTop10
-              city={filters.city}
-              category={filters.category}
-              title={`Weekly Top 10 ${filters.category ? filters.category : ''} ${filters.city ? 'in ' + filters.city : ''}`}
-            />
-          </motion.div>
+        {/* Status Indicators */}
+        {isLoading && (
+          <div className="flex justify-center py-20">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+          </div>
         )}
 
         {/* Results Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {artists.map((artist, i) => (
+          {artists.map((artist: any, i: number) => (
             <ArtistCard key={artist.id} artist={artist} index={i} />
           ))}
         </div>
 
-        {artists.length === 0 && (
+        {!isLoading && artists.length === 0 && (
           <div className="text-center py-20">
             <p className="text-muted-foreground text-lg">No artists found. Try adjusting your filters.</p>
           </div>

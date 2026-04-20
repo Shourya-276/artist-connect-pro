@@ -1,12 +1,11 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, TrendingUp } from 'lucide-react';
-import { Artist } from '@/data/mockData';
 import ArtistCard from './ArtistCard';
 
 interface TrendingCarouselProps {
   title: string;
-  artists: Artist[];
+  artists: any[];
 }
 
 export default function TrendingCarousel({ title, artists }: TrendingCarouselProps) {
@@ -19,6 +18,8 @@ export default function TrendingCarousel({ title, artists }: TrendingCarouselPro
     }
   };
 
+  if (!artists || artists.length === 0) return null;
+
   return (
     <div className="mb-12">
       <div className="flex items-center justify-between mb-6">
@@ -29,13 +30,13 @@ export default function TrendingCarousel({ title, artists }: TrendingCarouselPro
         <div className="flex gap-2">
           <button
             onClick={() => scroll('left')}
-            className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors text-foreground"
+            className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors text-foreground shadow-sm"
           >
             <ChevronLeft size={20} />
           </button>
           <button
             onClick={() => scroll('right')}
-            className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors text-foreground"
+            className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-secondary transition-colors text-foreground shadow-sm"
           >
             <ChevronRight size={20} />
           </button>
@@ -47,7 +48,7 @@ export default function TrendingCarousel({ title, artists }: TrendingCarouselPro
         style={{ scrollbarWidth: 'none' }}
       >
         {artists.map((artist, i) => (
-          <div key={artist.id} className="min-w-[280px] max-w-[280px]">
+          <div key={artist.id || i} className="min-w-[280px] max-w-[280px]">
             <ArtistCard artist={artist} index={i} />
           </div>
         ))}

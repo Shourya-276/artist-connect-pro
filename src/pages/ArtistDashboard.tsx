@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, LogOut, Banknote, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api';
 
 export default function ArtistDashboard() {
   const navigate = useNavigate();
@@ -11,6 +13,18 @@ export default function ArtistDashboard() {
   const [budgetChart, setBudgetChart] = useState([
     { eventType: '', budgetRange: '10001-20000', price: 0 },
   ]);
+
+  // Fetch Artist Profile
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ['artist-profile'],
+    queryFn: () => apiFetch('/api/artists/me'),
+  });
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
+  };
 
   const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
   const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
@@ -30,6 +44,10 @@ export default function ArtistDashboard() {
     blocked: 'bg-destructive/20 text-destructive border-destructive',
   };
 
+  if (isLoading) return <div className="min-h-screen pt-20 flex items-center justify-center">Loading dashboard...</div>;
+
+  const isProfileIncomplete = !profile?.bio || !profile?.priceRange;
+
   return (
     <div className="min-h-screen pt-20 bg-background">
       <div className="container-wide py-8">
@@ -42,31 +60,40 @@ export default function ArtistDashboard() {
             <Button
               variant="outline"
               className="border-destructive/30 text-destructive hover:bg-destructive/10"
-              onClick={() => navigate('/')}
+              onClick={handleLogout}
             >
               <LogOut size={18} className="mr-2" /> Logout
             </Button>
           </div>
 
           {/* Profile Completion Warning */}
-          <div className="bg-accent/10 border border-accent/20 rounded-xl p-4 mb-8 flex items-center gap-3">
-            <span className="text-2xl">⚠️</span>
-            <div>
-              <p className="font-medium text-foreground text-sm">Complete your profile</p>
-              <p className="text-xs text-muted-foreground">Upload at least 3 photos and 3 videos to activate your profile</p>
-            </div>
-            <Button size="sm" className="ml-auto">Complete Now</Button>
-          </div>
-
-          {/* Subscription Card */}
-          <div className="bg-card rounded-xl border border-border p-6 mb-8 card-elevated">
-            <div className="flex items-center justify-between">
+          {isProfileIncomplete && (
+            <div className="bg-accent/10 border border-accent/20 rounded-xl p-4 mb-8 flex items-center gap-3">
+              <span className="text-2xl">⚠️</span>
               <div>
-                <h3 className="font-heading font-semibold text-foreground">Annual Plan</h3>
-                <p className="text-sm text-muted-foreground">Expires in 45 days</p>
+                <p className="font-medium text-foreground text-sm">Complete your profile</p>
+                <p className="text-xs text-muted-foreground">Add your bio and pricing to appear in search results</p>
               </div>
-              <Button variant="outline" size="sm">Renew</Button>
+              <Link to="/artist/complete-profile" className="ml-auto">
+                <Button size="sm">Complete Now</Button>
+              </Link>
             </div>
+          )}
+
+          {/* Stats Bar */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+             <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+                <p className="text-xs font-bold text-muted-foreground uppercase">Views</p>
+                <p className="text-2xl font-bold text-foreground">{profile?.stats?.views || 0}</p>
+             </div>
+             <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+                <p className="text-xs font-bold text-muted-foreground uppercase">Bookings</p>
+                <p className="text-2xl font-bold text-foreground">{profile?.stats?.bookings || 0}</p>
+             </div>
+             <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+                <p className="text-xs font-bold text-muted-foreground uppercase">Rating</p>
+                <p className="text-2xl font-bold text-foreground">{profile?.rating || 'N/A'}</p>
+             </div>
           </div>
 
           {/* Calendar */}
@@ -76,12 +103,8 @@ export default function ArtistDashboard() {
                 <h3 className="font-heading font-semibold text-lg text-foreground flex items-center gap-2">
                   <CalendarIcon size={20} className="text-primary" /> Availability Calendar
                 </h3>
-                <div className="flex gap-2">
-                  <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))} className="w-8 h-8 rounded-lg border border-border flex items-center justify-center text-foreground hover:bg-secondary"><ChevronLeft size={16} /></button>
-                  <span className="px-3 py-1 text-sm font-medium text-foreground">{monthName}</span>
-                  <button onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))} className="w-8 h-8 rounded-lg border border-border flex items-center justify-center text-foreground hover:bg-secondary"><ChevronRight size={16} /></button>
-                </div>
               </div>
+              {/* Calendar grid... stays the same for UI purposes */}
               <div className="grid grid-cols-7 gap-2 mb-2">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
                   <div key={d} className="text-center text-xs font-medium text-muted-foreground py-2">{d}</div>
@@ -105,94 +128,46 @@ export default function ArtistDashboard() {
                   );
                 })}
               </div>
-              <div className="flex gap-4 mt-4 text-xs">
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-primary/30" /> Available</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-accent/30" /> Booked</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-destructive/30" /> Blocked</span>
-              </div>
             </div>
 
-            {/* Budget Chart Column */}
+            {/* Price List */}
             <div className="bg-card rounded-xl border border-border p-6 h-full">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-heading font-semibold text-lg text-foreground flex items-center gap-2">
-                  <Banknote size={20} className="text-primary" /> Event & Budget Chart
+                <h3 className="font-heading font-semibold text-lg text-foreground flex items-center gap-2 mb-6">
+                  <Banknote size={20} className="text-primary" /> Profile Status
                 </h3>
-                <Button size="sm" variant="ghost" className="text-primary hover:text-primary/80">Save Changes</Button>
-              </div>
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Manage your custom event pricing</p>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setBudgetChart([...budgetChart, { eventType: '', budgetRange: '10001-20000', price: 0 }])}
-                  className="h-8 p-0 text-primary hover:bg-transparent"
-                >
-                  <Plus size={16} className="mr-1" /> Add
-                </Button>
-              </div>
-              <div className="space-y-4">
-                {budgetChart.map((item, index) => (
-                  <div key={index} className="p-4 rounded-xl bg-secondary/30 border border-border space-y-3 relative group">
-                    <div className="flex items-center justify-between gap-2">
-                      <input
-                        value={item.eventType}
-                        onChange={e => {
-                          const newChart = [...budgetChart];
-                          newChart[index].eventType = e.target.value;
-                          setBudgetChart(newChart);
-                        }}
-                        className="flex-1 bg-transparent border-none text-sm font-semibold text-foreground focus:ring-0 p-0 placeholder:text-muted-foreground/50"
-                        placeholder="Event Name (e.g. Wedding)"
-                      />
-                      {budgetChart.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => setBudgetChart(budgetChart.filter((_, i) => i !== index))}
-                          className="text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive transition-all"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      )}
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">Category</span>
+                        <span className="text-sm font-bold text-foreground">{profile?.category?.name}</span>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1 block">Budget Range</label>
-                        <select
-                          value={item.budgetRange}
-                          onChange={e => {
-                            const newChart = [...budgetChart];
-                            newChart[index].budgetRange = e.target.value;
-                            setBudgetChart(newChart);
-                          }}
-                          className="w-full h-9 px-3 rounded-lg bg-card text-foreground border border-border text-xs focus:ring-1 focus:ring-primary outline-none"
-                        >
-                          <option value="0-5000">0 - 5000</option>
-                          <option value="5001-10000">5001 - 10000</option>
-                          <option value="10001-20000">10001 - 20000</option>
-                          <option value="20001-50000">20001 - 50000</option>
-                          <option value="50001-100000">50001 - 100000</option>
-                          <option value="100000+">100000+</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground mb-1 block">Your Price (₹)</label>
-                        <input
-                          type="number"
-                          value={item.price}
-                          onChange={e => {
-                            const newChart = [...budgetChart];
-                            newChart[index].price = parseInt(e.target.value) || 0;
-                            setBudgetChart(newChart);
-                          }}
-                          className="w-full h-9 px-3 rounded-lg bg-card text-foreground border border-border text-xs focus:ring-1 focus:ring-primary outline-none"
-                          placeholder="Price"
-                        />
-                      </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">City</span>
+                        <span className="text-sm font-bold text-foreground">{profile?.city?.name}</span>
                     </div>
-                  </div>
-                ))}
-              </div>
+                    <div className="flex justify-between items-center py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">Pricing</span>
+                        <span className="text-sm font-bold text-foreground">{profile?.priceRange || 'Not Set'}</span>
+                    </div>
+                    {profile?.budgetChart?.length > 0 && (
+                        <div className="py-2 border-b border-border">
+                            <span className="text-sm text-muted-foreground block mb-2">Event Types</span>
+                            <div className="flex flex-wrap gap-2">
+                                {profile.budgetChart.map((item: any, i: number) => (
+                                    <span key={i} className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-1 rounded-md border border-primary/20">
+                                        {item.eventType}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    <div className="flex justify-between items-center py-2 border-b border-border">
+                        <span className="text-sm text-muted-foreground">Verification</span>
+                        <span className="text-sm font-bold text-green-500">{profile?.isVerified ? 'Verified' : 'Pending'}</span>
+                    </div>
+                </div>
+                <Link to="/artist/complete-profile">
+                    <Button className="w-full mt-8" variant="outline">Edit My Profile</Button>
+                </Link>
             </div>
           </div>
         </motion.div>

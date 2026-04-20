@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { BarChart3, Users, Music, CreditCard, TrendingUp, Upload, Shield, ChevronRight, LogOut } from 'lucide-react';
+import { Music, Shield, LogOut, UserPlus, Filter, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { mockArtists } from '@/data/mockData';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api';
+import AddArtistForm from '@/components/admin/AddArtistForm';
+import SortArtist from '@/components/admin/SortArtist';
 
 const sidebarItems = [
-  { icon: BarChart3, label: 'Dashboard', key: 'dashboard' },
   { icon: Music, label: 'Artists', key: 'artists' },
-  { icon: Users, label: 'Clients', key: 'clients' },
-  { icon: CreditCard, label: 'Subscriptions', key: 'subscriptions' },
-  { icon: TrendingUp, label: 'Leaderboard', key: 'leaderboard' },
-  { icon: Upload, label: 'Bulk Import', key: 'import' },
+  { icon: UserPlus, label: 'Add Artist', key: 'add-artist' },
+  { icon: Filter, label: 'Sort Artists', key: 'sort-artist' },
 ];
 
 const roleBadge = (role: string) => {
@@ -25,15 +25,14 @@ const roleBadge = (role: string) => {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('artists');
   const [role] = useState('SuperAdmin');
+  
+  const { data: artists, isLoading } = useQuery<any[]>({
+    queryKey: ['admin-artists'],
+    queryFn: () => apiFetch('/api/artists'),
+  });
 
-  const dashboardStats = [
-    { label: 'Total Artists', value: '10,234', change: '+12%', icon: Music },
-    { label: 'Total Clients', value: '5,678', change: '+8%', icon: Users },
-    { label: 'Active Subs', value: '3,456', change: '+15%', icon: CreditCard },
-    { label: 'Revenue', value: '₹45.2L', change: '+22%', icon: TrendingUp },
-  ];
 
   return (
     <div className="min-h-screen flex pt-16">
@@ -76,56 +75,6 @@ export default function AdminDashboard() {
       <main className="flex-1 bg-background">
         <div className="p-6 sm:p-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            {activeTab === 'dashboard' && (
-              <>
-                <h1 className="font-heading font-bold text-2xl text-foreground mb-6">Dashboard Overview</h1>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-                  {dashboardStats.map((stat, i) => (
-                    <motion.div
-                      key={stat.label}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      className="bg-card rounded-xl border border-border p-5 card-elevated"
-                    >
-                      <div className="flex items-center justify-between mb-3">
-                        <stat.icon size={20} className="text-primary" />
-                        <span className="text-xs font-medium text-primary">{stat.change}</span>
-                      </div>
-                      <div className="text-2xl font-heading font-bold text-card-foreground">{stat.value}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{stat.label}</div>
-                    </motion.div>
-                  ))}
-                </div>
-                <h2 className="font-heading font-semibold text-lg text-foreground mb-4">Recent Artists</h2>
-                <div className="bg-card rounded-xl border border-border overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-secondary">
-                      <tr>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Name</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Category</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">City</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Rating</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mockArtists.map(a => (
-                        <tr key={a.id} className="border-t border-border hover:bg-secondary/50 transition-colors">
-                          <td className="p-3 font-medium text-card-foreground">{a.name}</td>
-                          <td className="p-3 text-muted-foreground">{a.category}</td>
-                          <td className="p-3 text-muted-foreground">{a.city}</td>
-                          <td className="p-3 text-card-foreground">{a.rating}</td>
-                          <td className="p-3">
-                            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">Active</span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
 
             {activeTab === 'artists' && (
               <>
@@ -134,89 +83,83 @@ export default function AdminDashboard() {
                   <table className="w-full text-sm">
                     <thead className="bg-secondary">
                       <tr>
+                        <th className="text-left p-3 font-medium text-muted-foreground">ID</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Artist</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Email</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Category</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">City</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Bookings</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Rating</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {mockArtists.map(a => (
-                        <tr key={a.id} className="border-t border-border hover:bg-secondary/50">
-                          <td className="p-3 flex items-center gap-3">
-                            <img src={a.image} alt="" className="w-8 h-8 rounded-full object-cover" />
-                            <span className="font-medium text-card-foreground">{a.name}</span>
+                      {isLoading ? (
+                        <tr><td colSpan={8} className="p-12 text-center text-muted-foreground">Loading artists...</td></tr>
+                      ) : artists?.map(a => (
+                        <tr key={a.id} className="border-t border-border hover:bg-secondary/50 transition-colors">
+                          <td className="p-3 text-[10px] font-mono text-muted-foreground select-all uppercase">{a.id.split('-').pop()}</td>
+                          <td className="p-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary overflow-hidden">
+                                {a.profileImage ? <img src={a.profileImage} className="w-full h-full object-cover" /> : a.name.charAt(0)}
+                              </div>
+                              <span className="font-semibold text-card-foreground">{a.name}</span>
+                            </div>
                           </td>
-                          <td className="p-3 text-muted-foreground">{a.category}</td>
-                          <td className="p-3 text-muted-foreground">{a.city}</td>
-                          <td className="p-3 text-card-foreground">{a.bookings}</td>
-                          <td className="p-3 text-card-foreground">{a.rating}</td>
-                          <td className="p-3"><Button variant="ghost" size="sm">View</Button></td>
+                          <td className="p-3 text-muted-foreground lowercase">{a.user?.email || 'no-email@id'}</td>
+                          <td className="p-3 text-muted-foreground">{a.category?.name || 'Uncategorized'}</td>
+                          <td className="p-3 text-muted-foreground">{a.city?.name || 'Remote'}</td>
+                          <td className="p-3">
+                             <div className="flex items-center gap-1">
+                               <span className="font-bold text-card-foreground">{a.rating}</span>
+                               <span className="text-[10px] text-muted-foreground">({a.totalReviews})</span>
+                             </div>
+                          </td>
+                          <td className="p-3">
+                             <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-8 px-3 gap-2 text-primary hover:text-primary hover:bg-primary/5 rounded-lg"
+                                onClick={() => window.open(`/artist/${a.id}`, '_blank')}
+                             >
+                               <ExternalLink size={14} /> View
+                             </Button>
+                          </td>
                         </tr>
                       ))}
+                      {!isLoading && artists?.length === 0 && (
+                        <tr><td colSpan={8} className="p-12 text-center text-muted-foreground">No artists found in the system.</td></tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
               </>
             )}
 
-            {activeTab === 'clients' && (
-              <div>
-                <h1 className="font-heading font-bold text-2xl text-foreground mb-6">Clients Management</h1>
-                <p className="text-muted-foreground">Client data will appear here from localStorage.</p>
-              </div>
-            )}
-
-            {activeTab === 'subscriptions' && (
-              <div>
-                <h1 className="font-heading font-bold text-2xl text-foreground mb-6">Subscriptions</h1>
-                <p className="text-muted-foreground">Subscription management panel.</p>
-              </div>
-            )}
-
-            {activeTab === 'leaderboard' && (
+            {activeTab === 'add-artist' && (
               <>
-                <h1 className="font-heading font-bold text-2xl text-foreground mb-6">Leaderboard</h1>
-                <div className="bg-card rounded-xl border border-border overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-secondary">
-                      <tr>
-                        <th className="text-left p-3 font-medium text-muted-foreground">#</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Artist</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Score</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Views</th>
-                        <th className="text-left p-3 font-medium text-muted-foreground">Bookings</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {mockArtists.sort((a, b) => (b.views + b.bookings * 10) - (a.views + a.bookings * 10)).map((a, i) => (
-                        <tr key={a.id} className="border-t border-border hover:bg-secondary/50">
-                          <td className="p-3 font-bold text-card-foreground">{i + 1}</td>
-                          <td className="p-3 font-medium text-card-foreground">{a.name}</td>
-                          <td className="p-3 text-primary font-bold">{a.views + a.shortlists * 3 + a.enquiries * 5 + a.bookings * 10}</td>
-                          <td className="p-3 text-muted-foreground">{a.views.toLocaleString()}</td>
-                          <td className="p-3 text-muted-foreground">{a.bookings}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h1 className="font-heading font-bold text-2xl text-foreground">Create New Artist Profile</h1>
+                    <p className="text-muted-foreground text-sm mt-1">Manually onboard and configure an artist's profile.</p>
+                  </div>
                 </div>
+                <AddArtistForm />
               </>
             )}
 
-            {activeTab === 'import' && (
-              <div>
-                <h1 className="font-heading font-bold text-2xl text-foreground mb-6">Bulk Import</h1>
-                <div className="bg-card rounded-xl border-2 border-dashed border-border p-12 text-center">
-                  <Upload size={48} className="mx-auto text-muted-foreground mb-4" />
-                  <h3 className="font-heading font-semibold text-foreground mb-2">Upload CSV File</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Drag & drop or click to upload artist data</p>
-                  <Button variant="outline">Select File</Button>
+            {activeTab === 'sort-artist' && (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h1 className="font-heading font-bold text-2xl text-foreground">Sort & Feature Artists</h1>
+                    <p className="text-muted-foreground text-sm mt-1">Select which artists to highlight on the homepage.</p>
+                  </div>
                 </div>
-              </div>
+                <SortArtist />
+              </>
             )}
+
           </motion.div>
         </div>
       </main>

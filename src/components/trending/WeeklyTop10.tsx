@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { Trophy, TrendingUp, Star, MapPin } from 'lucide-react';
-import { Artist, mockArtists } from '@/data/mockData';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api';
 
 interface WeeklyTop10Props {
     city?: string;
@@ -11,24 +12,31 @@ interface WeeklyTop10Props {
 }
 
 export default function WeeklyTop10({ city, category, title }: WeeklyTop10Props) {
-    // Mock logic to get top 10 based on score (views, bookings, reviews etc)
-    const getTrendingArtists = () => {
-        let filtered = [...mockArtists];
-        if (city) filtered = filtered.filter(a => a.city.toLowerCase() === city.toLowerCase());
-        if (category) filtered = filtered.filter(a => a.category.toLowerCase() === category.toLowerCase());
+    const { data: artists = [], isLoading } = useQuery({
+        queryKey: ['trending-artists', city, category],
+        queryFn: async () => {
+            const params = new URLSearchParams();
+            if (city) params.append('city', city);
+            if (category) params.append('category', category);
+            
+            const data = await apiFetch(`/api/artists?${params.toString()}`);
+            
+            // Score and sort for top 10
+            return data
+                .map((artist: any) => ({
+                    ...artist,
+                    score: (artist.stats?.views || 0) * 1 + (artist.stats?.bookings || 0) * 10 + (artist.rating || 0) * 100
+                }))
+                .sort((a: any, b: any) => b.score - a.score)
+                .slice(0, 10);
+        },
+    });
 
-        return filtered
-            .map(artist => ({
-                ...artist,
-                score: artist.views * 1 + artist.bookings * 10 + artist.rating * 100
-            }))
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 10);
-    };
+    if (isLoading) {
+        return <div className="py-10 text-center text-muted-foreground">Loading trending artists...</div>;
+    }
 
-    const trending = getTrendingArtists();
-
-    if (trending.length === 0) return null;
+    if (artists.length === 0) return null;
 
     return (
         <div className="w-full">
@@ -51,7 +59,7 @@ export default function WeeklyTop10({ city, category, title }: WeeklyTop10Props)
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {trending.map((artist, index) => (
+                {artists.map((artist: any, index: number) => (
                     <motion.div
                         key={artist.id}
                         initial={{ opacity: 0, x: -20 }}
@@ -68,7 +76,7 @@ export default function WeeklyTop10({ city, category, title }: WeeklyTop10Props)
 
                         {/* Image */}
                         <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
-                            <img src={artist.image} alt={artist.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                            <img src={artist.profileImage || 'https://via.placeholder.com/150'} alt={artist.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                         </div>
 
                         {/* Info */}
@@ -77,19 +85,19 @@ export default function WeeklyTop10({ city, category, title }: WeeklyTop10Props)
                                 <h3 className="font-heading font-bold text-foreground truncate group-hover:text-primary transition-colors">
                                     {artist.name}
                                 </h3>
-                                {artist.verified && (
+                                {artist.isVerified && (
                                     <div className="w-3.5 h-3.5 bg-primary rounded-full flex items-center justify-center">
                                         <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 text-white fill-current"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
                                     </div>
                                 )}
                             </div>
-                            <p className="text-xs text-muted-foreground mb-1">{artist.category} • {artist.priceRange}</p>
+                            <p className="text-xs text-muted-foreground mb-1">{artist.category?.name} • {artist.priceRange || 'Contact for price'}</p>
                             <div className="flex items-center gap-3">
                                 <span className="flex items-center gap-1 text-[11px] font-medium text-foreground">
-                                    <Star size={12} className="text-yellow-500 fill-yellow-500" /> {artist.rating}
+                                    <Star size={12} className="text-yellow-500 fill-yellow-500" /> {artist.rating || 'N/A'}
                                 </span>
                                 <span className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground uppercase">
-                                    <MapPin size={12} /> {artist.city}
+                                    <MapPin size={12} /> {artist.city?.name || 'Various'}
                                 </span>
                             </div>
                         </div>

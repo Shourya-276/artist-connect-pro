@@ -1,15 +1,25 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Search, ArrowRight, Star, Users, MapPin, Music } from 'lucide-react';
+import { Search, Users, Music } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { categories, mockArtists, testimonials } from '@/data/mockData';
-import ArtistCard from '@/components/artists/ArtistCard';
 import TrendingCarousel from '@/components/artists/TrendingCarousel';
-import WeeklyTop10 from '@/components/trending/WeeklyTop10';
 import Hero from '@/components/layout/Hero';
 import { Testimonials } from '@/components/layout/Testimonials';
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '@/lib/api';
 
 export default function Index() {
+  // Fetch Metadata & Artists
+  const { data: metadata } = useQuery({
+    queryKey: ['metadata'],
+    queryFn: () => apiFetch('/api/metadata'),
+  });
+
+  const { data: artists = [] } = useQuery({
+    queryKey: ['trending-artists'],
+    queryFn: () => apiFetch('/api/artists'),
+  });
+
   return (
     <div className="min-h-screen">
       <Hero />
@@ -32,7 +42,7 @@ export default function Index() {
           </motion.div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {categories.map((cat, i) => (
+            {metadata?.categories?.map((cat: any, i: number) => (
               <motion.div
                 key={cat.id}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -42,12 +52,12 @@ export default function Index() {
                 whileHover={{ scale: 1.05, y: -4 }}
               >
                 <Link
-                  to={`/search?category=${cat.id}`}
+                  to={`/search?category=${cat.name}`}
                   className="block bg-card border border-border rounded-xl p-6 text-center card-elevated"
                 >
                   <span className="text-4xl mb-3 block">{cat.icon}</span>
                   <h3 className="font-heading font-semibold text-card-foreground">{cat.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{cat.count.toLocaleString()} Artists</p>
+                  <p className="text-sm text-muted-foreground mt-1">Explore Artists</p>
                 </Link>
               </motion.div>
             ))}
@@ -58,8 +68,8 @@ export default function Index() {
       {/* Trending Artists */}
       <section className="section-padding bg-secondary/50">
         <div className="container-wide">
-          <TrendingCarousel title="📈 Trending This Week" artists={mockArtists} />
-          <TrendingCarousel title="💰 Top Sellers" artists={[...mockArtists].sort((a, b) => b.bookings - a.bookings)} />
+          <TrendingCarousel title="📈 Trending This Week" artists={artists.filter((a: any) => a.isTrending)} />
+          <TrendingCarousel title="💰 Top Sellers" artists={artists.filter((a: any) => a.isTopSeller)} />
         </div>
       </section>
 
@@ -104,7 +114,7 @@ export default function Index() {
         </div>
       </section>
 
-      <Testimonials testimonials={testimonials} />
+      {metadata?.testimonials?.length > 0 && <Testimonials testimonials={metadata.testimonials} />}
 
       {/* CTA */}
       <section className="section-padding">
@@ -119,7 +129,7 @@ export default function Index() {
               Ready To Make Your Event Unforgettable?
             </h2>
             <p className="text-primary-foreground/80 mb-8 max-w-lg mx-auto">
-              Join Thousands Of Event Planners Who Trust Live101.
+              Join Thousands Of Event Planners Who Trust Artist Connect Pro.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/search">

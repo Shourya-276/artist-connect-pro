@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
 import { Star, MapPin, Heart, BadgeCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Artist } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 import { useShortlist } from '@/hooks/use-shortlist';
 
 interface ArtistCardProps {
-  artist: Artist;
+  artist: any;
   index?: number;
 }
 
@@ -24,7 +23,7 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
-          src={artist.image}
+          src={artist.profileImage || 'https://via.placeholder.com/400x300'}
           alt={artist.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
@@ -38,7 +37,7 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
           <Heart size={16} fill={isShortlisted ? "currentColor" : "none"} />
         </button>
 
-        {artist.verified && (
+        {artist.isVerified && (
           <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium gradient-bg text-primary-foreground">
             <BadgeCheck size={12} />
             Verified
@@ -48,23 +47,23 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
         <div className="absolute bottom-3 left-3 right-3">
           <div className="flex items-center gap-1 text-primary-foreground">
             <Star size={14} className="fill-accent text-accent" />
-            <span className="text-sm font-semibold">{artist.rating}</span>
-            <span className="text-xs text-primary-foreground/70">({artist.reviews})</span>
+            <span className="text-sm font-semibold">{artist.rating || 'N/A'}</span>
+            <span className="text-xs text-primary-foreground/70">({artist.reviews?.length || 0})</span>
           </div>
         </div>
       </div>
 
       <div className="p-4">
         <div className="flex items-start justify-between mb-1">
-          <h3 className="font-heading font-semibold text-card-foreground">{artist.name}</h3>
+          <h3 className="font-heading font-semibold text-card-foreground truncate w-full">{artist.name}</h3>
         </div>
-        <p className="text-sm text-primary font-medium mb-2">{artist.category}</p>
+        <p className="text-sm text-primary font-medium mb-2">{artist.category?.name || 'Artist'}</p>
         <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
           <MapPin size={14} />
-          {artist.city}
+          {artist.city?.name || 'Various Cities'}
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-card-foreground">{artist.priceRange}</span>
+          <span className="text-sm font-semibold text-card-foreground">{artist.priceRange || 'Contact for Pricing'}</span>
         </div>
         <div className="flex gap-2 mt-3">
           <Link to={`/artist/${artist.id}`} className="flex-1">

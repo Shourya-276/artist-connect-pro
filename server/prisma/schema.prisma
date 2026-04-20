@@ -1,0 +1,252 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ARTIST
+  CLIENT
+  ADMIN
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum EnquiryStatus {
+  PENDING
+  RESPONDED
+  CLOSED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  passwordHash   String
+  role           Role           @default(CLIENT)
+  isVerified     Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  
+  artistProfile  ArtistProfile?
+  clientProfile  ClientProfile?
+  activityLogs   ActivityLog[]
+}
+
+model Category {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  icon           String?
+  artists        ArtistProfile[]
+}
+
+model Genre {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  artists        ArtistProfile[] @relation("ArtistGenres")
+}
+
+model City {
+  id             String         @id @default(uuid())
+  name           String         @unique
+  artists        ArtistProfile[]
+}
+
+model ArtistProfile {
+  id               String             @id @default(uuid())
+  userId           String             @unique
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name             String
+  bio              String?            @db.Text
+  priceRange       String?
+  rating           Float              @default(0)
+  totalReviews     Int                @default(0)
+  verifiedStatus   VerificationStatus @default(PENDING)
+  travelNationwide Boolean            @default(false)
+  isTrending       Boolean            @default(false)
+  isTopSeller      Boolean            @default(false)
+  
+  phone            String?
+  gender           String?
+  area             String?
+  languages        Json?
+  instruments      Json?
+  eventCategories  Json?
+  
+  facebook         String?
+  instagram        String?
+  youtube          String?
+  website          String?
+
+  profileImage     String?            // S3 URL
+  coverImage       String?            // S3 URL
+  
+  categoryId       String?
+  category         Category?          @relation(fields: [categoryId], references: [id])
+  cityId           String?
+  city             City?              @relation(fields: [cityId], references: [id])
+  
+  genres           Genre[]            @relation("ArtistGenres")
+  enquiries        Enquiry[]
+  bookings         Booking[]
+  reviews          Review[]
+  shortlists       Shortlist[]
+  stats            ArtistStats?
+  media            Media[]
+  
+  budgetChart      Json?               // [{ eventType: string, budgetRange: string, price: number }]
+  
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+}
+
+model Media {
+  id               String         @id @default(uuid())
+  url              String         @db.Text
+  type             MediaType
+  artistProfileId  String
+  artistProfile    ArtistProfile  @relation(fields: [artistProfileId], references: [id], onDelete: Cascade)
+  
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model ClientProfile {
+  id             String         @id @default(uuid())
+  userId         String         @unique
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name             String
+  companyName    String?
+  phone          String?
+  location       String?
+  
+  enquiries      Enquiry[]
+  bookings       Booking[]
+  reviews        Review[]
+  shortlists     Shortlist[]
+  
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model ArtistStats {
+  id               String        @id @default(uuid())
+  artistProfileId  String        @unique
+  artistProfile    ArtistProfile @relation(fields: [artistProfileId], references: [id], onDelete: Cascade)
+  
+  views            Int           @default(0)
+  enquiriesCount   Int           @default(0)
+  bookingsCount    Int           @default(0)
+  shortlistCount   Int           @default(0)
+  
+  updatedAt        DateTime      @updatedAt
+}
+
+model Enquiry {
+  id               String         @id @default(uuid())
+  clientId         String
+  client           ClientProfile  @relation(fields: [clientId], references: [id])
+  artistId         String
+  artist           ArtistProfile  @relation(fields: [artistId], references: [id])
+  
+  eventDate        DateTime
+  eventType        String
+  message          String?        @db.Text
+  status           EnquiryStatus  @default(PENDING)
+  
+  booking          Booking?
+  
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Booking {
+  id               String         @id @default(uuid())
+  enquiryId        String         @unique
+  enquiry          Enquiry        @relation(fields: [enquiryId], references: [id])
+  
+  clientId         String
+  client           ClientProfile  @relation(fields: [clientId], references: [id])
+  artistId         String
+  artist           ArtistProfile  @relation(fields: [artistId], references: [id])
+  
+  amount           Decimal        @db.Decimal(10, 2)
+  paymentStatus    String         @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  status           BookingStatus  @default(PENDING)
+  
+  hasBeenReviewed  Boolean        @default(false)
+  
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Shortlist {
+  id               String         @id @default(uuid())
+  clientId         String
+  client           ClientProfile  @relation(fields: [clientId], references: [id])
+  artistId         String
+  artist           ArtistProfile  @relation(fields: [artistId], references: [id])
+  
+  createdAt        DateTime       @default(now())
+  
+  @@unique([clientId, artistId])
+}
+
+model Review {
+  id               String         @id @default(uuid())
+  artistId         String
+  artist           ArtistProfile  @relation(fields: [artistId], references: [id])
+  clientId         String
+  client           ClientProfile  @relation(fields: [clientId], references: [id])
+  
+  rating           Int
+  comment          String?        @db.Text
+  isApproved       Boolean        @default(false)
+  
+  createdAt        DateTime       @default(now())
+}
+
+model ActivityLog {
+  id               String         @id @default(uuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id])
+  action           String
+  details          String?        @db.Text
+  
+  createdAt        DateTime       @default(now())
+}
+
+model HomePageStat {
+  id               String         @id @default(uuid())
+  label            String
+  value            String
+}
+
+model Testimonial {
+  id               String         @id @default(uuid())
+  name             String
+  role             String?
+  text             String         @db.Text
+  rating           Int            @default(5)
+}
