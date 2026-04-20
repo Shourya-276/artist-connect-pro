@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { uploadFileToS3 } from '../utils/s3.js';
+import { uploadToCloudinary } from '../utils/cloudinary.js';
 import prisma from '../config/db.js';
 
 /**
@@ -18,7 +18,7 @@ export const uploadMedia = async (req: any, res: Response) => {
         if (!artist) return res.status(404).json({ message: 'Artist not found' });
 
         const uploadPromises = files.map(async (file) => {
-            const url = await uploadFileToS3(file.buffer, file.originalname, file.mimetype);
+            const url = await uploadToCloudinary(file.buffer, 'gallery') as string;
             const type = file.mimetype.startsWith('video/') ? 'VIDEO' : 'IMAGE';
             return prisma.media.create({
                 data: { url, type, artistProfileId: artist.id },
@@ -41,7 +41,7 @@ export const uploadProfileImage = async (req: any, res: Response) => {
         const file = req.file as Express.Multer.File;
         if (!file) return res.status(400).json({ message: 'No file uploaded' });
 
-        const url = await uploadFileToS3(file.buffer, file.originalname, file.mimetype);
+        const url = await uploadToCloudinary(file.buffer, 'profile-pics') as string;
         
         await prisma.artistProfile.update({
             where: { userId },
@@ -63,7 +63,7 @@ export const uploadCoverImage = async (req: any, res: Response) => {
         const file = req.file as Express.Multer.File;
         if (!file) return res.status(400).json({ message: 'No file uploaded' });
 
-        const url = await uploadFileToS3(file.buffer, file.originalname, file.mimetype);
+        const url = await uploadToCloudinary(file.buffer, 'cover-images') as string;
         
         await prisma.artistProfile.update({
             where: { userId },
