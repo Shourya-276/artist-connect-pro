@@ -35,8 +35,16 @@ export default function ClientDashboard() {
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        navigate('/');
+        navigate('/client/login', { replace: true });
     };
+
+    // Basic security check
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/client/login');
+        }
+    }, [navigate]);
 
     if (isLoading) return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-background gap-4">
@@ -68,7 +76,7 @@ export default function ClientDashboard() {
     const initials = profile.name ? profile.name.split(' ').map((n: string) => n[0]).join('').toUpperCase() : 'U';
 
     return (
-        <div className="min-h-screen pt-16 bg-[#F8F9FB] flex flex-col lg:flex-row overflow-hidden h-screen">
+        <div className="min-h-screen pt-16 bg-[#F8F9FB] flex flex-col lg:flex-row overflow-hidden h-[calc(100vh)]">
             <AnimatePresence>
                 {selectedReviewBooking && (
                     <ReviewModal 
@@ -79,7 +87,7 @@ export default function ClientDashboard() {
             </AnimatePresence>
 
             {/* Premium Sidebar */}
-            <aside className="w-full lg:w-72 bg-white border-r border-border/50 flex flex-col z-20 shadow-sm relative overflow-y-auto lg:overflow-visible no-scrollbar">
+            <aside className="w-full lg:w-72 bg-white border-r border-border/50 flex flex-col z-20 shadow-sm relative lg:sticky lg:top-16 h-[calc(100vh-4rem)]">
                 <div className="p-8 pb-4">
                     <div className="flex items-center gap-4 mb-2 p-4 rounded-3xl bg-secondary/30 border border-border/20">
                         <div className="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center text-primary-foreground font-black text-xl shadow-xl shadow-primary/20 shrink-0">
@@ -92,7 +100,7 @@ export default function ClientDashboard() {
                     </div>
                 </div>
 
-                <nav className="flex-1 px-4 space-y-1.5 py-4">
+                <nav className="flex-1 px-4 space-y-1.5 py-4 overflow-y-auto custom-scrollbar">
                     {[
                         { icon: LayoutDashboard, label: 'Overview' },
                         { icon: Heart, label: 'Shortlisted' },

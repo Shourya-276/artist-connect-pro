@@ -12,6 +12,7 @@ import artistRoutes from './routes/artist.routes.js';
 import clientRoutes from './routes/client.routes.js';
 import mediaRoutes from './routes/media.routes.js';
 import reviewRoutes from './routes/review.routes.js';
+import leadRoutes from './routes/lead.routes.js';
 
 // Load env vars
 dotenv.config();
@@ -47,6 +48,7 @@ app.use('/api/artists', artistRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/leads', leadRoutes);
 
 // Basic health check
 app.get('/health', (req: Request, res: Response) => {

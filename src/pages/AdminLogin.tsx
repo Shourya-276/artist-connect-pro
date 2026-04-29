@@ -14,6 +14,7 @@ export default function AdminLogin() {
         e.preventDefault();
         if (email === 'admin@gmail.com' && password === '123') {
             toast.success('Admin access granted');
+            localStorage.setItem('isAdminLoggedIn', 'true');
             navigate('/admin');
         } else {
             toast.error('Invalid admin credentials');

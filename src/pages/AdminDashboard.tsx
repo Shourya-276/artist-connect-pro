@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Music, Shield, LogOut, UserPlus, Filter, ExternalLink } from 'lucide-react';
+import { Music, Shield, LogOut, UserPlus, Filter, ExternalLink, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
@@ -12,6 +12,7 @@ const sidebarItems = [
   { icon: Music, label: 'Artists', key: 'artists' },
   { icon: UserPlus, label: 'Add Artist', key: 'add-artist' },
   { icon: Filter, label: 'Sort Artists', key: 'sort-artist' },
+  { icon: Users, label: 'Leads', key: 'leads' },
 ];
 
 const roleBadge = (role: string) => {
@@ -33,6 +34,24 @@ export default function AdminDashboard() {
     queryFn: () => apiFetch('/api/artists'),
   });
 
+  const { data: leads, isLoading: isLoadingLeads } = useQuery<any[]>({
+    queryKey: ['admin-leads'],
+    queryFn: () => apiFetch('/api/leads'),
+    enabled: activeTab === 'leads',
+  });
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAdminLoggedIn');
+    navigate('/admin/login', { replace: true });
+  };
+
+  // Basic security check
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('isAdminLoggedIn');
+    if (isAdmin !== 'true') {
+      navigate('/admin/login');
+    }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex pt-16">
@@ -63,7 +82,7 @@ export default function AdminDashboard() {
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-sidebar-foreground/70 hover:text-destructive hover:bg-destructive/10"
-            onClick={() => navigate('/')}
+            onClick={handleLogout}
           >
             <LogOut size={18} />
             Logout
@@ -157,6 +176,39 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <SortArtist />
+              </>
+            )}
+
+            {activeTab === 'leads' && (
+              <>
+                <h1 className="font-heading font-bold text-2xl text-foreground mb-6">Inquiry Leads</h1>
+                <div className="bg-card rounded-xl border border-border overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-secondary">
+                      <tr>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Date</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Name</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Email</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Message</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {isLoadingLeads ? (
+                        <tr><td colSpan={4} className="p-12 text-center text-muted-foreground">Loading leads...</td></tr>
+                      ) : leads?.map(l => (
+                        <tr key={l.id} className="border-t border-border hover:bg-secondary/50 transition-colors">
+                          <td className="p-3 text-muted-foreground whitespace-nowrap">{new Date(l.createdAt).toLocaleDateString()}</td>
+                          <td className="p-3 font-semibold text-card-foreground">{l.name}</td>
+                          <td className="p-3 text-muted-foreground">{l.email}</td>
+                          <td className="p-3 text-muted-foreground max-w-md truncate" title={l.message}>{l.message}</td>
+                        </tr>
+                      ))}
+                      {!isLoadingLeads && leads?.length === 0 && (
+                        <tr><td colSpan={4} className="p-12 text-center text-muted-foreground">No leads found.</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </>
             )}
 

@@ -250,3 +250,11 @@ model Testimonial {
   text             String         @db.Text
   rating           Int            @default(5)
 }
+
+model Lead {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+}
