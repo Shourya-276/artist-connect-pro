@@ -54,8 +54,28 @@ export default function AdminDashboard() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex pt-16">
-      {/* Sidebar */}
+    <div className="min-h-screen flex flex-col lg:flex-row pt-16 bg-background">
+      {/* Mobile Header / Sidebar Toggle */}
+      <div className="lg:hidden bg-sidebar text-sidebar-foreground p-4 border-b border-sidebar-border flex items-center justify-between sticky top-16 z-20">
+        <div className="flex items-center gap-2">
+          <Shield size={20} className="text-sidebar-primary" />
+          <span className="font-heading font-bold">Admin Panel</span>
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+          {sidebarItems.map(item => (
+            <button
+              key={item.key}
+              onClick={() => setActiveTab(item.key)}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${activeTab === item.key ? 'bg-sidebar-primary text-white shadow-lg' : 'bg-sidebar-accent/50 text-sidebar-foreground/70'}`}
+            >
+              <item.icon size={14} />
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop Sidebar */}
       <aside className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border hidden lg:flex flex-col sticky top-16 h-[calc(100vh-4rem)]">
         <div className="p-6">
           <div className="flex items-center gap-2 mb-1">
