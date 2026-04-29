@@ -163,7 +163,7 @@ export default function AdminDashboard() {
                     <p className="text-muted-foreground text-sm mt-1">Manually onboard and configure an artist's profile.</p>
                   </div>
                 </div>
-                <AddArtistForm />
+                <AddArtistForm onArtistCreated={() => setActiveTab('artists')} />
               </>
             )}
 

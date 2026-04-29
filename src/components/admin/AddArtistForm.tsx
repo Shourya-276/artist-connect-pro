@@ -6,7 +6,7 @@ import { CheckCircle2, UserPlus, Image as ImageIcon, Video, Trash2, Camera, Uplo
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 
-export default function AddArtistForm() {
+export default function AddArtistForm({ onArtistCreated }: { onArtistCreated?: () => void }) {
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState({
         fullName: '',
@@ -89,6 +89,8 @@ export default function AddArtistForm() {
         }
     };
 
+    const [showSuccess, setShowSuccess] = useState(false);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -115,7 +117,7 @@ export default function AddArtistForm() {
             const newToken = authData.token;
 
             // 2. Update Profile with details
-            await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/artists/me`, {
+            const profileRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/artists/me`, {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -141,6 +143,8 @@ export default function AddArtistForm() {
                 }),
             });
 
+            if (!profileRes.ok) throw new Error('Failed to update artist details');
+
             // 3. Media Uploads
             if (files.profile) {
                 await uploadMediaAction('profile-pill', files.profile, newToken, false);
@@ -152,7 +156,9 @@ export default function AddArtistForm() {
                 await uploadMediaAction('upload', files.gallery, newToken, true);
             }
 
-            toast.success('Successfully created new artist profile!');
+            // Success state
+            setShowSuccess(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             
             // Reset form
             setForm({
@@ -169,6 +175,39 @@ export default function AddArtistForm() {
             setLoading(false);
         }
     };
+
+    if (showSuccess) {
+        return (
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-card border-2 border-primary/20 rounded-[3rem] p-12 text-center shadow-2xl space-y-8 my-12"
+            >
+                <div className="w-24 h-24 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle2 size={48} />
+                </div>
+                <div>
+                    <h2 className="text-4xl font-black tracking-tighter mb-4">Artist Created Successfully!</h2>
+                    <p className="text-muted-foreground text-lg max-w-md mx-auto">The new profile is now live and can be managed from the artists list.</p>
+                </div>
+                <div className="flex gap-4 justify-center pt-6">
+                    <Button 
+                        onClick={() => setShowSuccess(false)}
+                        className="rounded-2xl h-14 px-10 font-black uppercase tracking-widest gradient-bg border-none"
+                    >
+                        Create Another
+                    </Button>
+                    <Button 
+                        variant="outline"
+                        onClick={onArtistCreated || (() => window.location.reload())}
+                        className="rounded-2xl h-14 px-10 font-black uppercase tracking-widest border-2"
+                    >
+                        View Artists List
+                    </Button>
+                </div>
+            </motion.div>
+        );
+    }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-10 pb-20">
