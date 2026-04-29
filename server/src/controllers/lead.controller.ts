@@ -10,22 +10,29 @@ export const createLead = async (req: Request, res: Response) => {
     }
 
     const lead = await prisma.lead.create({
-      data: { name, email, message },
+      data: {
+        name,
+        email,
+        message,
+      },
     });
 
-    res.status(201).json({ message: 'Lead captured successfully', lead });
+    console.log('✅ Lead created:', lead.id);
+    return res.status(201).json({ message: 'Lead captured successfully', lead });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    console.error('❌ CreateLead Error:', error);
+    return res.status(500).json({ message: error.message || 'Internal Server Error' });
   }
 };
 
-export const getAllLeads = async (req: Request, res: Response) => {
+export const getAllLeads = async (_req: Request, res: Response) => {
   try {
     const leads = await prisma.lead.findMany({
       orderBy: { createdAt: 'desc' },
     });
-    res.status(200).json(leads);
+    return res.status(200).json(leads);
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    console.error('❌ GetAllLeads Error:', error);
+    return res.status(500).json({ message: error.message || 'Internal Server Error' });
   }
 };

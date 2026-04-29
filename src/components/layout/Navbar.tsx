@@ -65,16 +65,16 @@ export default function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <Button asChild variant="outline" size="sm" className={`hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : ''
+            <Button asChild variant="outline" size="sm" className={`cursor-pointer flex items-center justify-center transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : 'hover:bg-red-600 hover:text-white hover:border-red-600'
               }`}>
               <Link to="/admin/login">Admin</Link>
             </Button>
             
-            <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700">
+            <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center">
               <Link to="/artist/login">Artist Login</Link>
             </Button>
             
-            <Button asChild variant="default" size="sm" className="flex items-center gap-2 bg-red-600 text-white hover:bg-red-700">
+            <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center gap-2">
               <Link to="/client/login">
                 <LayoutDashboard size={16} /> Client Login
               </Link>
