@@ -37,7 +37,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen flex pt-16">
       {/* Sidebar */}
-      <aside className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border hidden lg:flex flex-col">
+      <aside className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border hidden lg:flex flex-col sticky top-16 h-[calc(100vh-4rem)]">
         <div className="p-6">
           <div className="flex items-center gap-2 mb-1">
             <Shield size={20} className="text-sidebar-primary" />
@@ -45,7 +45,7 @@ export default function AdminDashboard() {
           </div>
           <div className="mt-1">{roleBadge(role)}</div>
         </div>
-        <nav className="px-3 flex-1">
+        <nav className="px-3 flex-1 overflow-y-auto custom-scrollbar">
           {sidebarItems.map(item => (
             <button
               key={item.key}
