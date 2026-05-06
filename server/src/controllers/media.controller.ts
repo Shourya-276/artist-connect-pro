@@ -8,9 +8,9 @@ import prisma from '../config/db.js';
 export const uploadMedia = async (req: any, res: Response) => {
     try {
         const userId = req.user.userId;
-        const files = req.files as Express.Multer.File[];
+        const files = (req.files ? req.files : (req.file ? [req.file] : [])) as Express.Multer.File[];
 
-        if (!files || files.length === 0) {
+        if (files.length === 0) {
             return res.status(400).json({ message: 'No files uploaded' });
         }
 

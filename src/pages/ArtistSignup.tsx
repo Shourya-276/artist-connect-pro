@@ -129,6 +129,7 @@ export default function ArtistSignup() {
           if (!res.ok) throw new Error(`Failed to upload to ${endpoint}`);
       } catch (e: any) { 
           toast.error(e.message); 
+          throw e; // Re-throw to stop the calling function
       }
   };
 
@@ -204,9 +205,7 @@ export default function ArtistSignup() {
         await uploadMediaAction('upload', files.images, token, true);
       }
       if (files.videos.length > 0) {
-        for (const video of files.videos) {
-            await uploadMediaAction('video-upload', video, token, false);
-        }
+        await uploadMediaAction('upload', files.videos, token, true);
       }
 
       toast.success('Successfully registered! Welcome to Live101.');

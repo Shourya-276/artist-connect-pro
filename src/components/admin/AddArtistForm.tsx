@@ -86,6 +86,7 @@ export default function AddArtistForm({ onArtistCreated }: { onArtistCreated?: (
             if (!res.ok) throw new Error(`Failed to upload to ${endpoint}`);
         } catch (e: any) { 
             toast.error(e.message); 
+            throw e;
         }
     };
 

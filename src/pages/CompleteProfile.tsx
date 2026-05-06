@@ -132,7 +132,7 @@ export default function CompleteProfile() {
         
         const token = localStorage.getItem('token');
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/media/${endpoint}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/media/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: formData,
@@ -140,7 +140,10 @@ export default function CompleteProfile() {
             if (!res.ok) throw new Error('Upload failed');
             toast.success('Media updated!');
             queryClient.invalidateQueries({ queryKey: ['artist-profile'] });
-        } catch (e: any) { toast.error(e.message); }
+        } catch (e: any) { 
+            toast.error(e.message); 
+            throw e;
+        }
         setUploading(null);
     };
 

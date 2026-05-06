@@ -9,6 +9,7 @@ const upload = multer({ storage, limits: { fileSize: 100 * 1024 * 1024 } }); // 
 
 // Portfolio Gallery
 router.post('/upload', authMiddleware, upload.array('files', 15), uploadMedia);
+router.post('/video-upload', authMiddleware, upload.single('file'), uploadMedia);
 
 // Profile Picture
 router.post('/profile-pill', authMiddleware, upload.single('file'), uploadProfileImage);
