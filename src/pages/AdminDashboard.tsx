@@ -44,6 +44,8 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('isAdminLoggedIn');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     navigate('/admin/login', { replace: true });
   };
 

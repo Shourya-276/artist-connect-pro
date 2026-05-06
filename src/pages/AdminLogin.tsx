@@ -4,20 +4,33 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Shield, Lock, Mail } from 'lucide-react';
 import { toast } from 'sonner';
+import { apiFetch } from '@/lib/api';
 
 export default function AdminLogin() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (email === 'admin@gmail.com' && password === '123') {
+        try {
+            const data = await apiFetch('/api/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+
+            if (data.user.role !== 'ADMIN') {
+                toast.error('Access denied: You are not an admin');
+                return;
+            }
+
             toast.success('Admin access granted');
             localStorage.setItem('isAdminLoggedIn', 'true');
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
             navigate('/admin');
-        } else {
-            toast.error('Invalid admin credentials');
+        } catch (error: any) {
+            toast.error(error.message || 'Invalid admin credentials');
         }
     };
 
