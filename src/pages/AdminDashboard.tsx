@@ -7,11 +7,13 @@ import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 import AddArtistForm from '@/components/admin/AddArtistForm';
 import SortArtist from '@/components/admin/SortArtist';
+import EditArtist from '@/components/admin/EditArtist';
 
 const sidebarItems = [
   { icon: Music, label: 'Artists', key: 'artists' },
   { icon: UserPlus, label: 'Add Artist', key: 'add-artist' },
   { icon: Filter, label: 'Sort Artists', key: 'sort-artist' },
+  { icon: Music, label: 'Edit Artist', key: 'edit-artist' },
   { icon: Users, label: 'Leads', key: 'leads' },
 ];
 
@@ -176,6 +178,18 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <SortArtist />
+              </>
+            )}
+            
+            {activeTab === 'edit-artist' && (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h1 className="font-heading font-bold text-2xl text-foreground">Edit Artist Profile</h1>
+                    <p className="text-muted-foreground text-sm mt-1">Search and modify an existing artist's details.</p>
+                  </div>
+                </div>
+                <EditArtist />
               </>
             )}
 

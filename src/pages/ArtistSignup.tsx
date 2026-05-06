@@ -121,7 +121,7 @@ export default function ArtistSignup() {
       }
       
       try {
-          const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/media/${endpoint}`, {
+          const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://15.206.66.202:5001'}/api/media/${endpoint}`, {
               method: 'POST',
               headers: { 'Authorization': `Bearer ${token}` },
               body: formData,

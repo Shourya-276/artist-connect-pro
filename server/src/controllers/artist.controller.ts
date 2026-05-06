@@ -55,6 +55,12 @@ export const getArtistById = async (req: Request, res: Response) => {
         genres: true,
         stats: true,
         media: true,
+        user: {
+          select: {
+            email: true,
+            id: true,
+          }
+        },
         reviews: {
           include: {
             client: true,
@@ -153,6 +159,32 @@ export const updateArtistProfile = async (req: any, res: Response) => {
     } catch (error: any) {
         console.error('❌ UpdateArtistProfile Error:', error);
         res.status(500).json({ message: 'Failed to update profile', error: error.message });
+    }
+};
+
+export const updateArtist = async (req: any, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { name, bio, priceRange, categoryId, cityId, genreIds, budgetChart, travelNationwide, phone, gender, area, languages, instruments, eventCategories, facebook, instagram, youtube, website } = req.body;
+
+        const updatedProfile = await prisma.artistProfile.update({
+            where: { id },
+            data: {
+                name,
+                bio,
+                priceRange,
+                budgetChart,
+                travelNationwide, phone, gender, area, languages, instruments, eventCategories, facebook, instagram, youtube, website,
+                category: categoryId ? { connect: { id: categoryId } } : { disconnect: true },
+                city: cityId ? { connect: { id: cityId } } : { disconnect: true },
+                genres: genreIds ? { set: genreIds.map((gid: string) => ({ id: gid })) } : undefined,
+            }
+        });
+
+        res.status(200).json(updatedProfile);
+    } catch (error: any) {
+        console.error('❌ UpdateArtist Error:', error);
+        res.status(500).json({ message: 'Failed to update artist', error: error.message });
     }
 };
 

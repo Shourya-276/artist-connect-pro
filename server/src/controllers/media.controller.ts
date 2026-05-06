@@ -8,13 +8,23 @@ import prisma from '../config/db.js';
 export const uploadMedia = async (req: any, res: Response) => {
     try {
         const userId = req.user.userId;
+        const targetArtistId = req.body.artistId;
         const files = (req.files ? req.files : (req.file ? [req.file] : [])) as Express.Multer.File[];
 
         if (files.length === 0) {
-            return res.status(400).json({ message: 'No files uploaded' });
+            return res.status(400).json({ 
+                message: 'No files uploaded or field name mismatch. Expected "files" for multiple or "file" for single.',
+                debug: { hasFiles: !!req.files, hasFile: !!req.file, body: req.body }
+            });
         }
 
-        const artist = await prisma.artistProfile.findUnique({ where: { userId } });
+        let artist;
+        if (req.user.role === 'ADMIN' && targetArtistId) {
+            artist = await prisma.artistProfile.findUnique({ where: { id: targetArtistId } });
+        } else {
+            artist = await prisma.artistProfile.findUnique({ where: { userId } });
+        }
+        
         if (!artist) return res.status(404).json({ message: 'Artist not found' });
 
         const uploadPromises = files.map(async (file) => {
@@ -32,21 +42,29 @@ export const uploadMedia = async (req: any, res: Response) => {
     }
 };
 
-/**
- * Upload Profile Image specifically
- */
 export const uploadProfileImage = async (req: any, res: Response) => {
     try {
         const userId = req.user.userId;
+        const targetArtistId = req.body.artistId;
         const file = req.file as Express.Multer.File;
-        if (!file) return res.status(400).json({ message: 'No file uploaded' });
+        if (!file) return res.status(400).json({ 
+            message: 'No file uploaded. Expected field: "file"', 
+            debug: { body: req.body, hasFiles: !!req.files } 
+        });
 
         const url = await uploadToCloudinary(file.buffer, 'profile-pics') as string;
         
-        await prisma.artistProfile.update({
-            where: { userId },
-            data: { profileImage: url }
-        });
+        if (req.user.role === 'ADMIN' && targetArtistId) {
+            await prisma.artistProfile.update({
+                where: { id: targetArtistId },
+                data: { profileImage: url }
+            });
+        } else {
+            await prisma.artistProfile.update({
+                where: { userId },
+                data: { profileImage: url }
+            });
+        }
 
         res.status(200).json({ message: 'Profile picture updated', url });
     } catch (error: any) {
@@ -54,21 +72,29 @@ export const uploadProfileImage = async (req: any, res: Response) => {
     }
 };
 
-/**
- * Upload Cover Image specifically
- */
 export const uploadCoverImage = async (req: any, res: Response) => {
     try {
         const userId = req.user.userId;
+        const targetArtistId = req.body.artistId;
         const file = req.file as Express.Multer.File;
-        if (!file) return res.status(400).json({ message: 'No file uploaded' });
+        if (!file) return res.status(400).json({ 
+            message: 'No file uploaded. Expected field: "file"', 
+            debug: { body: req.body, hasFiles: !!req.files } 
+        });
 
         const url = await uploadToCloudinary(file.buffer, 'cover-images') as string;
         
-        await prisma.artistProfile.update({
-            where: { userId },
-            data: { coverImage: url }
-        });
+        if (req.user.role === 'ADMIN' && targetArtistId) {
+            await prisma.artistProfile.update({
+                where: { id: targetArtistId },
+                data: { coverImage: url }
+            });
+        } else {
+            await prisma.artistProfile.update({
+                where: { userId },
+                data: { coverImage: url }
+            });
+        }
 
         res.status(200).json({ message: 'Cover image updated', url });
     } catch (error: any) {
@@ -85,7 +111,14 @@ export const deleteMedia = async (req: any, res: Response) => {
             include: { artistProfile: true },
         });
 
-        if (!media || media.artistProfile.userId !== userId) {
+        if (!media) {
+            return res.status(404).json({ message: 'Media not found' });
+        }
+
+        const isOwner = media.artistProfile.userId === userId;
+        const isAdmin = req.user.role === 'ADMIN';
+
+        if (!isOwner && !isAdmin) {
             return res.status(403).json({ message: 'Unauthorized' });
         }
 
