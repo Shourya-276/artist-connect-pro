@@ -1,9 +1,29 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Seeding database...');
+
+  // 0. Admin User
+  const adminEmail = 'admin@gmail.com';
+  const hashedPassword = await bcrypt.hash('123', 10);
+  
+  await prisma.user.upsert({
+    where: { email: adminEmail },
+    update: { 
+        role: 'ADMIN',
+        passwordHash: hashedPassword
+    },
+    create: {
+      email: adminEmail,
+      passwordHash: hashedPassword,
+      role: 'ADMIN',
+      isVerified: true
+    },
+  });
+  console.log('👤 Admin user ensured');
 
   // 1. Categories
   const categories = [
