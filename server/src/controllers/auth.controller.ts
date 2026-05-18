@@ -22,24 +22,24 @@ export const register = async (req: Request, res: Response) => {
         role: userRole as any,
         // Automatically create a profile based on role
         ...(userRole === 'ARTIST' ? {
-            artistProfile: {
-                create: {
-                    name,
-                    profileImage: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
-                }
+          artistProfile: {
+            create: {
+              name,
+              profileImage: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
             }
+          }
         } : {
-            clientProfile: {
-                create: {
-                    name,
-                    phone: phone || '',
-                }
+          clientProfile: {
+            create: {
+              name,
+              phone: phone || '',
             }
+          }
         })
       },
       include: {
-          artistProfile: true,
-          clientProfile: true
+        artistProfile: true,
+        clientProfile: true
       }
     });
 
@@ -66,12 +66,12 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({ 
-        where: { email },
-        include: {
-            artistProfile: { select: { id: true, name: true } },
-            clientProfile: { select: { id: true, name: true } }
-        }
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: {
+        artistProfile: { select: { id: true, name: true } },
+        clientProfile: { select: { id: true, name: true } }
+      }
     });
 
     if (!user) {
@@ -100,5 +100,37 @@ export const login = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error('❌ Login Error:', error);
     res.status(500).json({ message: 'Login failed', error: error.message });
+  }
+};
+
+export const changePassword = async (req: any, res: Response) => {
+  try {
+    const userId = req.user.userId;
+    const { oldPassword, newPassword } = req.body;
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ message: 'Previous password and new password are required' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.passwordHash);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Incorrect previous password' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash: hashedPassword }
+    });
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error: any) {
+    console.error('❌ ChangePassword Error:', error);
+    res.status(500).json({ message: 'Failed to update password', error: error.message });
   }
 };

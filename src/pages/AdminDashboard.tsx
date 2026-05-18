@@ -205,22 +205,24 @@ export default function AdminDashboard() {
                         <th className="text-left p-3 font-medium text-muted-foreground">Date</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Name</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Email</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Phone</th>
                         <th className="text-left p-3 font-medium text-muted-foreground">Message</th>
                       </tr>
                     </thead>
                     <tbody>
                       {isLoadingLeads ? (
-                        <tr><td colSpan={4} className="p-12 text-center text-muted-foreground">Loading leads...</td></tr>
+                        <tr><td colSpan={5} className="p-12 text-center text-muted-foreground">Loading leads...</td></tr>
                       ) : leads?.map(l => (
                         <tr key={l.id} className="border-t border-border hover:bg-secondary/50 transition-colors">
                           <td className="p-3 text-muted-foreground whitespace-nowrap">{new Date(l.createdAt).toLocaleDateString()}</td>
                           <td className="p-3 font-semibold text-card-foreground">{l.name}</td>
                           <td className="p-3 text-muted-foreground">{l.email}</td>
+                          <td className="p-3 text-muted-foreground select-all font-mono">{l.phone || 'N/A'}</td>
                           <td className="p-3 text-muted-foreground max-w-md truncate" title={l.message}>{l.message}</td>
                         </tr>
                       ))}
                       {!isLoadingLeads && leads?.length === 0 && (
-                        <tr><td colSpan={4} className="p-12 text-center text-muted-foreground">No leads found.</td></tr>
+                        <tr><td colSpan={5} className="p-12 text-center text-muted-foreground">No leads found.</td></tr>
                       )}
                     </tbody>
                   </table>

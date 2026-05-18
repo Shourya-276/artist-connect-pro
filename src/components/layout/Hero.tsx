@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Search, ArrowRight } from 'lucide-react';
@@ -15,6 +17,18 @@ const itemVariants = {
 };
 
 export default function Hero() {
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        } else {
+            navigate('/search');
+        }
+    };
+
     return (
         <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0">
@@ -38,7 +52,8 @@ export default function Hero() {
                         Book Live Artist For Events
                     </motion.h1>
 
-                    <motion.div
+                    <motion.form
+                        onSubmit={handleSearch}
                         variants={itemVariants}
                         className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto mb-12"
                     >
@@ -46,16 +61,16 @@ export default function Hero() {
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
                             <input
                                 type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search Artists, Categories, Cities..."
                                 className="w-full h-12 pl-12 pr-4 rounded-xl bg-white text-foreground placeholder:text-muted-foreground border-none focus:ring-2 focus:ring-primary outline-none text-sm"
                             />
                         </div>
-                        <Link to="/search">
-                            <Button size="lg" className="h-12 px-8 rounded-xl w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/20">
-                                Explore <ArrowRight size={18} className="ml-2" />
-                            </Button>
-                        </Link>
-                    </motion.div>
+                        <Button type="submit" size="lg" className="h-12 px-8 rounded-xl w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/20">
+                            Explore <ArrowRight size={18} className="ml-2" />
+                        </Button>
+                    </motion.form>
 
                     <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-10 md:gap-20 pt-8">
                         <div className="text-center flex flex-col items-center min-w-[120px]">

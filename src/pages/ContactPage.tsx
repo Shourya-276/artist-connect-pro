@@ -16,6 +16,7 @@ export default function ContactPage() {
     const data = {
       name: formData.get('name'),
       email: formData.get('email'),
+      phone: formData.get('phone'),
       message: formData.get('message'),
     };
 
@@ -64,14 +65,15 @@ export default function ContactPage() {
             ))}
           </motion.div>
           <motion.form
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-4"
-            onSubmit={handleSubmit}
+             initial={{ opacity: 0, x: 20 }}
+             animate={{ opacity: 1, x: 0 }}
+             transition={{ delay: 0.2 }}
+             className="space-y-4"
+             onSubmit={handleSubmit}
           >
             <input name="name" required className="w-full h-11 px-4 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Your name" />
             <input name="email" required type="email" className="w-full h-11 px-4 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Your email" />
+            <input name="phone" className="w-full h-11 px-4 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Your phone number (optional)" />
             <textarea name="message" required className="w-full px-4 py-3 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm resize-none" rows={5} placeholder="Your message" />
             <Button
               className="w-full rounded-xl gap-2 font-bold"

@@ -14,11 +14,50 @@ export default function ArtistProfilePage() {
   const [showContact, setShowContact] = useState(false);
 
   // Fetch Artist Data
-  const { data: artist, isLoading, error } = useQuery({
+  const { data: artist, isLoading, error, refetch } = useQuery({
     queryKey: ['artist', id],
     queryFn: () => apiFetch(`/api/artists/${id}`),
     enabled: !!id,
   });
+
+  const [reviewRating, setReviewRating] = useState<number>(0);
+  const [reviewHoverRating, setReviewHoverRating] = useState<number>(0);
+  const [reviewComment, setReviewComment] = useState<string>('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
+
+  // Retrieve user session
+  const userStr = localStorage.getItem('user');
+  const loggedInUser = userStr ? JSON.parse(userStr) : null;
+  const isClient = loggedInUser?.role === 'CLIENT';
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (reviewRating === 0) {
+      toast.error('Please select a rating of at least 1 star');
+      return;
+    }
+    setIsSubmittingReview(true);
+
+    try {
+      await apiFetch('/api/reviews', {
+        method: 'POST',
+        body: JSON.stringify({
+          artistId: id,
+          rating: reviewRating,
+          comment: reviewComment,
+        }),
+      });
+
+      toast.success('Review submitted successfully!');
+      setReviewRating(0);
+      setReviewComment('');
+      refetch();
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to submit review');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
 
   const { isShortlisted, toggleShortlist } = useShortlist(id || '', artist?.name || '');
 
@@ -255,13 +294,80 @@ export default function ArtistProfilePage() {
                             </div>
                         </div>
 
+                        {/* Write a Review Section for Logged-In Clients */}
+                        {isClient ? (
+                            <div className="p-8 rounded-[2rem] bg-card border border-border shadow-sm mb-10">
+                                <h3 className="font-heading font-black text-2xl mb-2 text-foreground">Share Your Experience</h3>
+                                <p className="text-muted-foreground text-sm mb-6">How was your interaction or event with {artist.name}?</p>
+                                
+                                <form onSubmit={handleReviewSubmit} className="space-y-4">
+                                    {/* Star Input */}
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="text-sm font-bold text-foreground mr-2">Your Rating:</span>
+                                        <div className="flex gap-1">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <button
+                                                    key={star}
+                                                    type="button"
+                                                    onClick={() => setReviewRating(star)}
+                                                    onMouseEnter={() => setReviewHoverRating(star)}
+                                                    onMouseLeave={() => setReviewHoverRating(0)}
+                                                    className="transition-transform active:scale-95 outline-none"
+                                                >
+                                                    <Star
+                                                        size={24}
+                                                        className={
+                                                            star <= (reviewHoverRating || reviewRating)
+                                                                ? 'fill-primary text-primary'
+                                                                : 'text-muted-foreground/30'
+                                                        }
+                                                    />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Comment Textarea */}
+                                    <textarea
+                                        value={reviewComment}
+                                        onChange={(e) => setReviewComment(e.target.value)}
+                                        required
+                                        rows={3}
+                                        placeholder="Write a glowing review or share helpful feedback about this artist..."
+                                        className="w-full px-4 py-3 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm resize-none"
+                                    />
+
+                                    {/* Submit Button */}
+                                    <Button
+                                        type="submit"
+                                        disabled={isSubmittingReview}
+                                        className="rounded-xl font-bold px-6 py-2.5 shadow-lg shadow-primary/20"
+                                    >
+                                        {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                                    </Button>
+                                </form>
+                            </div>
+                        ) : !loggedInUser ? (
+                            <div className="p-6 rounded-[2rem] bg-secondary/30 border border-border text-center mb-10">
+                                <p className="text-sm font-bold text-muted-foreground">
+                                    Have you booked this artist? <Link to="/client/login" className="text-primary hover:underline font-black">Log in as a Client</Link> to share your review!
+                                </p>
+                            </div>
+                        ) : loggedInUser.role === 'ARTIST' ? (
+                            <div className="p-6 rounded-[2rem] bg-secondary/30 border border-border text-center mb-10">
+                                <p className="text-sm font-bold text-muted-foreground">
+                                    Artists cannot review other artists. Log in with a client account to submit a review!
+                                </p>
+                            </div>
+                        ) : null}
+
                         {artist.reviews?.length > 0 ? artist.reviews.map((r: any) => (
                             <div key={r.id} className="p-8 rounded-[2rem] bg-card border border-border shadow-sm">
                                 <div className="flex justify-between items-start mb-6">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg shadow-primary/20">{r.client?.name[0]}</div>
+                                        <div className="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg shadow-primary/20">{(r.reviewerName || r.client?.name || 'Anonymous')[0]}</div>
                                         <div>
-                                            <p className="font-black text-lg text-foreground tracking-tight">{r.client?.name}</p>
+                                            <p className="font-black text-lg text-foreground tracking-tight">{r.reviewerName || r.client?.name || 'Anonymous'}</p>
                                             <p className="text-[10px] font-bold text-muted-foreground uppercase">{new Date(r.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
                                         </div>
                                     </div>

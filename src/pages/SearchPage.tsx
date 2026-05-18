@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,11 +9,23 @@ import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
+  const [searchParams] = useSearchParams();
+  const initialQuery = searchParams.get('q') || '';
+  const initialCategory = searchParams.get('category') || '';
+  const initialCity = searchParams.get('city') || '';
+  const initialGenre = searchParams.get('genre') || '';
+
+  const [query, setQuery] = useState(initialQuery);
+  const [showFilters, setShowFilters] = useState(initialCategory || initialCity || initialGenre ? true : false);
   const [filters, setFilters] = useState({
-    category: '', genre: '', city: '', eventType: '', language: '',
-    budgetMin: '', budgetMax: '', travel: false,
+    category: initialCategory, 
+    genre: initialGenre, 
+    city: initialCity, 
+    eventType: '', 
+    language: '',
+    budgetMin: '', 
+    budgetMax: '', 
+    travel: false,
   });
 
   // Fetch Metadata (Categories, Cities, Genres)

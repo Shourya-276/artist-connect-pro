@@ -3,18 +3,19 @@ import prisma from '../config/db.js';
 
 export const createLead = async (req: Request, res: Response) => {
   try {
-    const { name, email, message } = req.body;
+    const { name, email, phone, message } = req.body;
 
     if (!name || !email || !message) {
-      return res.status(400).json({ message: 'All fields are required' });
+      return res.status(400).json({ message: 'Name, email, and message are required' });
     }
 
     const lead = await prisma.lead.create({
       data: {
         name,
         email,
+        phone: phone || null,
         message,
-      },
+      } as any,
     });
 
     console.log('✅ Lead created:', lead.id);

@@ -68,6 +68,7 @@ model ArtistProfile {
   phone            String?
   website          String?
   youtube          String?
+  availability     Json?
   category         Category?          @relation(fields: [categoryId], references: [id])
   city             City?              @relation(fields: [cityId], references: [id])
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -172,15 +173,16 @@ model Shortlist {
 }
 
 model Review {
-  id         String        @id @default(uuid())
-  artistId   String
-  clientId   String
-  rating     Int
-  comment    String?       @db.Text
-  isApproved Boolean       @default(false)
-  createdAt  DateTime      @default(now())
-  artist     ArtistProfile @relation(fields: [artistId], references: [id])
-  client     ClientProfile @relation(fields: [clientId], references: [id])
+  id           String         @id @default(uuid())
+  artistId     String
+  clientId     String?
+  reviewerName String?
+  rating       Int
+  comment      String?        @db.Text
+  isApproved   Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  artist       ArtistProfile  @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  client       ClientProfile? @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@index([artistId], map: "Review_artistId_fkey")
   @@index([clientId], map: "Review_clientId_fkey")
@@ -215,6 +217,7 @@ model Lead {
   id        String   @id @default(uuid())
   name      String
   email     String
+  phone     String?
   message   String   @db.Text
   createdAt DateTime @default(now())
 }

@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/sonner';
-import { CheckCircle2, UserPlus, Image as ImageIcon, Video, Trash2, Camera, UploadCloud, LayoutPanelTop, Plus } from 'lucide-react';
+import { CheckCircle2, UserPlus, Image as ImageIcon, Video, Trash2, Camera, UploadCloud, LayoutPanelTop, Plus, MessageSquare, Star } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 
@@ -30,6 +30,7 @@ export default function AddArtistForm({ onArtistCreated }: { onArtistCreated?: (
         budgetChart: [
             { eventType: '', budgetRange: '10001-20000', price: 0 },
         ],
+        reviews: [] as { id?: string; reviewerName: string; rating: number; comment: string }[],
     });
 
     const [files, setFiles] = useState({
@@ -141,6 +142,7 @@ export default function AddArtistForm({ onArtistCreated }: { onArtistCreated?: (
                     eventCategories: form.eventCategories,
                     facebook: form.facebook,
                     travelNationwide: form.travelNationwide,
+                    reviews: form.reviews,
                 }),
             });
 
@@ -167,6 +169,7 @@ export default function AddArtistForm({ onArtistCreated }: { onArtistCreated?: (
                 instagram: '', youtube: '', website: '', facebook: '', categoryId: '', cityId: '', genreIds: [],
                 phone: '', gender: '', area: '', languages: [], eventCategories: [], travelNationwide: false,
                 budgetChart: [{ eventType: '', budgetRange: '10001-20000', price: 0 }],
+                reviews: [],
             });
             setFiles({ profile: null, cover: null, gallery: [] });
 
@@ -496,6 +499,121 @@ export default function AddArtistForm({ onArtistCreated }: { onArtistCreated?: (
                             <input value={(form as any)[s]} onChange={e => update(s, e.target.value)} className="w-full h-12 px-4 rounded-xl bg-secondary border border-border focus:ring-2 focus:ring-primary outline-none text-xs" placeholder={`${s} url`} />
                         </div>
                     ))}
+                </div>
+            </section>
+
+            {/* Reviews Panel */}
+            <section className="bg-card border border-border p-8 rounded-3xl shadow-lg space-y-6">
+                <div className="flex items-center justify-between">
+                    <h3 className="font-heading font-black text-2xl flex items-center gap-2">
+                        <MessageSquare size={24} className="text-primary"/> 6. Guest Reviews & Stars
+                    </h3>
+                    <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                            const randomNames = ["Aarav Mehta", "Pooja Sharma", "Vikram Malhotra", "Neha Kapoor", "Rahul Verma", "Ananya Iyer", "Amit Patel", "Sneha Rao", "Rohan Joshi", "Kiran Desai"];
+                            const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
+                            update('reviews', [...form.reviews, { reviewerName: randomName, rating: 5, comment: 'Amazing performance! Highly recommended.' }]);
+                        }}
+                        className="h-9 px-4 border-primary/50 text-primary hover:bg-primary/5 rounded-xl font-bold"
+                    >
+                        <Plus size={16} className="mr-2" /> Add Fake Review
+                    </Button>
+                </div>
+                
+                <div className="space-y-4">
+                    {form.reviews.map((item: any, index: number) => (
+                        <div key={index} className="p-6 rounded-2xl bg-secondary/30 border border-border space-y-4 relative">
+                            <div className="flex justify-between items-start">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Review #{index + 1}</span>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    onClick={() => update('reviews', form.reviews.filter((_: any, i: number) => i !== index))}
+                                    className="w-8 h-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 p-0 flex items-center justify-center"
+                                >
+                                    <Trash2 size={16} />
+                                </Button>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Reviewer Name (Fake Name)</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            required
+                                            value={item.reviewerName}
+                                            onChange={e => {
+                                                const newReviews = [...form.reviews];
+                                                newReviews[index].reviewerName = e.target.value;
+                                                update('reviews', newReviews);
+                                            }}
+                                            className="flex-1 h-11 px-4 rounded-xl bg-card border border-border text-sm outline-none focus:ring-2 focus:ring-primary font-bold"
+                                            placeholder="e.g. Aarav Sharma"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="secondary"
+                                            onClick={() => {
+                                                const randomNames = ["Aarav Mehta", "Pooja Sharma", "Vikram Malhotra", "Neha Kapoor", "Rahul Verma", "Ananya Iyer", "Amit Patel", "Sneha Rao", "Rohan Joshi", "Kiran Desai", "John Doe", "Sarah Connor", "Michael Scott", "Emily Watson"];
+                                                const randomName = randomNames[Math.floor(Math.random() * randomNames.length)];
+                                                const newReviews = [...form.reviews];
+                                                newReviews[index].reviewerName = randomName;
+                                                update('reviews', newReviews);
+                                            }}
+                                            className="h-11 px-3 text-xs font-bold rounded-xl"
+                                        >
+                                            Suggest
+                                        </Button>
+                                    </div>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Rating (Stars)</label>
+                                    <select
+                                        value={item.rating}
+                                        onChange={e => {
+                                            const newReviews = [...form.reviews];
+                                            newReviews[index].rating = Number(e.target.value);
+                                            update('reviews', newReviews);
+                                        }}
+                                        className="w-full h-11 px-4 rounded-xl bg-card border border-border text-sm font-bold"
+                                    >
+                                        <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                                        <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                                        <option value="3">⭐⭐⭐ (3 Stars)</option>
+                                        <option value="2">⭐⭐ (2 Stars)</option>
+                                        <option value="1">⭐ (1 Star)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Review Comment</label>
+                                <textarea
+                                    required
+                                    value={item.comment}
+                                    onChange={e => {
+                                        const newReviews = [...form.reviews];
+                                        newReviews[index].comment = e.target.value;
+                                        update('reviews', newReviews);
+                                    }}
+                                    className="w-full h-24 px-4 py-3 rounded-xl bg-card border border-border text-sm outline-none focus:ring-2 focus:ring-primary leading-relaxed font-medium"
+                                    placeholder="Write a glowing review comment here..."
+                                />
+                            </div>
+                        </div>
+                    ))}
+                    
+                    {form.reviews.length === 0 && (
+                        <div className="text-center py-10 opacity-30 bg-secondary/50 rounded-2xl border border-dashed border-border">
+                            <MessageSquare className="mx-auto mb-2 text-muted-foreground" size={32} />
+                            <p className="text-xs uppercase tracking-widest font-black">No reviews added yet</p>
+                            <p className="text-[10px] text-muted-foreground mt-1 lowercase">Click "Add Fake Review" above to put test/fake reviews for this artist.</p>
+                        </div>
+                    )}
                 </div>
             </section>
 
