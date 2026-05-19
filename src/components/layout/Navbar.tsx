@@ -92,32 +92,36 @@ export default function Navbar() {
                 <span className={`text-sm font-medium ${!scrolled && isHome ? 'text-white' : 'text-foreground'}`}>
                   Hi, {user.name || 'User'}
                 </span>
-                <Button asChild variant="outline" size="sm" className={`cursor-pointer flex items-center justify-center transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : 'hover:bg-red-600 hover:text-white hover:border-red-600'
-                  }`}>
-                  <Link to={user.role === 'ADMIN' ? '/admin/dashboard' : user.role === 'ARTIST' ? '/artist/dashboard' : '/client/dashboard'}>
+                <Link to={user.role === 'ADMIN' ? '/admin/dashboard' : user.role === 'ARTIST' ? '/artist/dashboard' : '/client/dashboard'}>
+                  <Button variant="outline" size="sm" className={`cursor-pointer flex items-center justify-center transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : 'hover:bg-red-600 hover:text-white hover:border-red-600'
+                    }`}>
                     <LayoutDashboard size={16} className="mr-1.5" /> Dashboard
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
                 <Button onClick={handleLogout} variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center">
                   Logout
                 </Button>
               </>
             ) : (
               <>
-                <Button asChild variant="outline" size="sm" className={`cursor-pointer flex items-center justify-center transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : 'hover:bg-red-600 hover:text-white hover:border-red-600'
-                  }`}>
-                  <Link to="/admin/login">Admin</Link>
-                </Button>
+                <Link to="/admin/login">
+                  <Button variant="outline" size="sm" className={`cursor-pointer flex items-center justify-center transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : 'hover:bg-red-600 hover:text-white hover:border-red-600'
+                    }`}>
+                    Admin
+                  </Button>
+                </Link>
                 
-                <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center">
-                  <Link to="/artist/login">Artist Login</Link>
-                </Button>
+                <Link to="/artist/login">
+                  <Button variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center">
+                    Artist Login
+                  </Button>
+                </Link>
                 
-                <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center gap-2">
-                  <Link to="/client/login">
+                <Link to="/client/login">
+                  <Button variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center gap-2">
                     <LayoutDashboard size={16} /> Client Login
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </>
             )}
           </div>
