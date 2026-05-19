@@ -19,6 +19,28 @@ export default function Navbar() {
   const location = useLocation();
   const isHome = location.pathname === '/';
 
+  const [user, setUser] = useState<any>(null);
+
+  const checkUser = () => {
+    const userStr = localStorage.getItem('user');
+    setUser(userStr ? JSON.parse(userStr) : null);
+  };
+
+  useEffect(() => {
+    checkUser();
+    window.addEventListener('storage', checkUser);
+    return () => window.removeEventListener('storage', checkUser);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('shortlistedArtists');
+    setUser(null);
+    window.dispatchEvent(new Event('storage'));
+    window.location.href = '/';
+  };
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
@@ -46,7 +68,7 @@ export default function Navbar() {
               className="h-14 lg:h-16 w-auto transition-transform hover:scale-105"
             />
           </Link>
-
+  
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
@@ -63,24 +85,43 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
-
+  
           <div className="hidden lg:flex items-center gap-3">
-            <Button asChild variant="outline" size="sm" className={`cursor-pointer flex items-center justify-center transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : 'hover:bg-red-600 hover:text-white hover:border-red-600'
-              }`}>
-              <Link to="/admin/login">Admin</Link>
-            </Button>
-            
-            <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center">
-              <Link to="/artist/login">Artist Login</Link>
-            </Button>
-            
-            <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center gap-2">
-              <Link to="/client/login">
-                <LayoutDashboard size={16} /> Client Login
-              </Link>
-            </Button>
+            {user ? (
+              <>
+                <span className={`text-sm font-medium ${!scrolled && isHome ? 'text-white' : 'text-foreground'}`}>
+                  Hi, {user.name || 'User'}
+                </span>
+                <Button asChild variant="outline" size="sm" className={`cursor-pointer flex items-center justify-center transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : 'hover:bg-red-600 hover:text-white hover:border-red-600'
+                  }`}>
+                  <Link to={user.role === 'ADMIN' ? '/admin/dashboard' : user.role === 'ARTIST' ? '/artist/dashboard' : '/client/dashboard'}>
+                    <LayoutDashboard size={16} className="mr-1.5" /> Dashboard
+                  </Link>
+                </Button>
+                <Button onClick={handleLogout} variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center">
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="outline" size="sm" className={`cursor-pointer flex items-center justify-center transition-colors ${!scrolled && isHome ? 'border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10' : 'hover:bg-red-600 hover:text-white hover:border-red-600'
+                  }`}>
+                  <Link to="/admin/login">Admin</Link>
+                </Button>
+                
+                <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center">
+                  <Link to="/artist/login">Artist Login</Link>
+                </Button>
+                
+                <Button asChild variant="default" size="sm" className="bg-red-600 text-white hover:bg-red-700 cursor-pointer flex items-center justify-center gap-2">
+                  <Link to="/client/login">
+                    <LayoutDashboard size={16} /> Client Login
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
-
+  
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className={`lg:hidden p-2 ${!scrolled && isHome ? 'text-primary-foreground' : 'text-foreground'}`}
@@ -89,7 +130,7 @@ export default function Navbar() {
           </button>
         </div>
       </motion.nav>
-
+  
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -109,17 +150,35 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="flex flex-col gap-3 pt-4">
-                <Button asChild variant="outline" className="w-full hover:bg-red-600 hover:text-white hover:border-red-600">
-                  <Link to="/admin/login">Admin Login</Link>
-                </Button>
-                <Button asChild variant="default" className="w-full bg-red-600 text-white">
-                  <Link to="/artist/login">Artist Login</Link>
-                </Button>
-                <Button asChild variant="default" className="w-full flex items-center justify-center gap-2 bg-red-600 text-white">
-                  <Link to="/client/login">
-                    <LayoutDashboard size={18} /> Client Login
-                  </Link>
-                </Button>
+                {user ? (
+                  <>
+                    <div className="text-sm font-medium text-muted-foreground px-1">
+                      Logged in as <span className="text-foreground font-semibold">{user.name || 'User'}</span>
+                    </div>
+                    <Button asChild variant="outline" className="w-full hover:bg-red-600 hover:text-white hover:border-red-600">
+                      <Link to={user.role === 'ADMIN' ? '/admin/dashboard' : user.role === 'ARTIST' ? '/artist/dashboard' : '/client/dashboard'}>
+                        Dashboard
+                      </Link>
+                    </Button>
+                    <Button onClick={handleLogout} variant="default" className="w-full bg-red-600 text-white">
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button asChild variant="outline" className="w-full hover:bg-red-600 hover:text-white hover:border-red-600">
+                      <Link to="/admin/login">Admin Login</Link>
+                    </Button>
+                    <Button asChild variant="default" className="w-full bg-red-600 text-white">
+                      <Link to="/artist/login">Artist Login</Link>
+                    </Button>
+                    <Button asChild variant="default" className="w-full flex items-center justify-center gap-2 bg-red-600 text-white">
+                      <Link to="/client/login">
+                        <LayoutDashboard size={18} /> Client Login
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
