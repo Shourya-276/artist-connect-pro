@@ -76,6 +76,8 @@ const startServer = async () => {
         PRIMARY KEY (\`id\`)
       ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
     `);
+    // If Lead table already existed but without phone column
+    await safeAlter('Lead.phone',  "ALTER TABLE `Lead` ADD COLUMN `phone` VARCHAR(191) NULL");
 
     console.log('✅ Database self-healing checks complete.');
     
