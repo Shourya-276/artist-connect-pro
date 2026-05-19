@@ -12,6 +12,10 @@ interface ArtistCardProps {
 export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
   const { isShortlisted, toggleShortlist } = useShortlist(artist.id, artist.name);
 
+  const userStr = localStorage.getItem('user');
+  const loggedInUser = userStr ? JSON.parse(userStr) : null;
+  const isClient = loggedInUser?.role === 'CLIENT';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -29,13 +33,15 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
 
-        <button
-          onClick={toggleShortlist}
-          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all ${isShortlisted ? 'bg-primary text-primary-foreground' : 'glass hover:bg-primary hover:text-primary-foreground'
-            }`}
-        >
-          <Heart size={16} fill={isShortlisted ? "currentColor" : "none"} />
-        </button>
+        {isClient && (
+          <button
+            onClick={toggleShortlist}
+            className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all ${isShortlisted ? 'bg-primary text-primary-foreground' : 'glass hover:bg-primary hover:text-primary-foreground'
+              }`}
+          >
+            <Heart size={16} fill={isShortlisted ? "currentColor" : "none"} />
+          </button>
+        )}
 
         {artist.isVerified && (
           <div className="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium gradient-bg text-primary-foreground">
@@ -69,14 +75,16 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
           <Link to={`/artist/${artist.id}`} className="flex-1">
             <Button variant="outline" size="sm" className="w-full text-xs">View Profile</Button>
           </Link>
-          <Button
-            variant={isShortlisted ? "secondary" : "default"}
-            size="sm"
-            className="flex-1 text-xs"
-            onClick={toggleShortlist}
-          >
-            {isShortlisted ? "Shortlisted" : "Shortlist"}
-          </Button>
+          {isClient && (
+            <Button
+              variant={isShortlisted ? "secondary" : "default"}
+              size="sm"
+              className="flex-1 text-xs"
+              onClick={toggleShortlist}
+            >
+              {isShortlisted ? "Shortlisted" : "Shortlist"}
+            </Button>
+          )}
         </div>
       </div>
     </motion.div>

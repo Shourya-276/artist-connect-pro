@@ -70,7 +70,7 @@ export const submitReview = async (req: any, res: Response) => {
         res.status(201).json({ message: 'Review submitted successfully!', review });
     } catch (error: any) {
         console.error('❌ Review Submission Error:', error);
-        res.status(500).json({ message: 'Failed to submit review', error: error.message });
+        res.status(500).json({ message: `Failed to submit review: ${error.message}`, error: error.message });
     }
 };
 

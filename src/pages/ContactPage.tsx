@@ -79,7 +79,7 @@ export default function ContactPage() {
           >
             <input name="name" required className="w-full h-11 px-4 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Your name" />
             <input name="email" required type="email" className="w-full h-11 px-4 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Your email" />
-            <input name="phone" className="w-full h-11 px-4 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Your phone number (optional)" />
+            <input name="phone" className="w-full h-11 px-4 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm" placeholder="Your phone number" />
             <textarea name="message" required className="w-full px-4 py-3 rounded-xl bg-secondary text-foreground border border-border focus:ring-2 focus:ring-primary outline-none text-sm resize-none" rows={5} placeholder="Your message" />
             <Button
               className="w-full rounded-xl gap-2 font-bold"

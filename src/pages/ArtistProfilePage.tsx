@@ -119,14 +119,16 @@ export default function ArtistProfilePage() {
                 </div>
 
                 <div className="flex gap-3 mb-2 relative z-30">
-                    <Button 
-                        onClick={toggleShortlist}
-                        variant={isShortlisted ? "secondary" : "outline"} 
-                        className={`rounded-2xl h-14 w-14 lg:w-auto px-0 lg:px-6 shadow-xl ${isShortlisted ? 'bg-primary text-primary-foreground border-none' : 'backdrop-blur-md bg-card/50 ring-1 ring-white/10'}`}
-                    >
-                        <Heart size={20} className={isShortlisted ? 'fill-current' : ''} />
-                        <span className="hidden lg:inline ml-2 font-bold uppercase tracking-widest text-xs">{isShortlisted ? 'Saved' : 'Shortlist'}</span>
-                    </Button>
+                    {isClient && (
+                      <Button 
+                          onClick={toggleShortlist}
+                          variant={isShortlisted ? "secondary" : "outline"} 
+                          className={`rounded-2xl h-14 w-14 lg:w-auto px-0 lg:px-6 shadow-xl ${isShortlisted ? 'bg-primary text-primary-foreground border-none' : 'backdrop-blur-md bg-card/50 ring-1 ring-white/10'}`}
+                      >
+                          <Heart size={20} className={isShortlisted ? 'fill-current' : ''} />
+                          <span className="hidden lg:inline ml-2 font-bold uppercase tracking-widest text-xs">{isShortlisted ? 'Saved' : 'Shortlist'}</span>
+                      </Button>
+                    )}
                     <Button 
                         onClick={() => setShowContact(true)}
                         className="rounded-2xl h-14 px-8 lg:px-10 text-md font-black uppercase tracking-widest shadow-2xl shadow-primary/30 gradient-bg"
