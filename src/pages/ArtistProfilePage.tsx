@@ -69,6 +69,19 @@ export default function ArtistProfilePage() {
     return <div className="min-h-screen flex items-center justify-center pt-20 bg-background text-2xl font-black uppercase tracking-widest opacity-20">Artist Not Found</div>;
   }
 
+  const formatReviewCount = (count: number): string => {
+    if (!count) return '0';
+    if (count >= 1000000) {
+      const millions = count / 1000000;
+      return millions % 1 === 0 ? `${millions}M` : `${millions.toFixed(1)}M`;
+    }
+    if (count >= 1000) {
+      const thousands = count / 1000;
+      return thousands % 1 === 0 ? `${thousands}k` : `${thousands.toFixed(1)}k`;
+    }
+    return count.toString();
+  };
+
   const photos = artist.media?.filter((m: any) => m.type === 'IMAGE') || [];
   const videos = artist.media?.filter((m: any) => m.type === 'VIDEO') || [];
 
@@ -113,7 +126,7 @@ export default function ArtistProfilePage() {
                         <div className="flex items-center gap-6 text-sm lg:text-md font-bold uppercase tracking-widest text-muted-foreground/80">
                             <span className="flex items-center gap-1.5 text-primary"><MapPin size={18} /> {artist.city?.name || 'Anywhere'}</span>
                             <span className="flex items-center gap-1.5"><BadgeCheck size={18} /> {artist.category?.name}</span>
-                            <span className="flex items-center gap-1.5"><Star size={18} className="text-yellow-500 fill-yellow-500" /> {artist.rating} ({artist.totalReviews} Reviews)</span>
+                            <span className="flex items-center gap-1.5"><Star size={18} className="text-yellow-500 fill-yellow-500" /> {artist.rating} ({formatReviewCount(artist.totalReviews || 0)} Reviews)</span>
                         </div>
                     </motion.div>
                 </div>

@@ -15,6 +15,18 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
   const userStr = localStorage.getItem('user');
   const loggedInUser = userStr ? JSON.parse(userStr) : null;
   const isClient = loggedInUser?.role === 'CLIENT';
+  const formatReviewCount = (count: number): string => {
+    if (!count) return '0';
+    if (count >= 1000000) {
+      const millions = count / 1000000;
+      return millions % 1 === 0 ? `${millions}M` : `${millions.toFixed(1)}M`;
+    }
+    if (count >= 1000) {
+      const thousands = count / 1000;
+      return thousands % 1 === 0 ? `${thousands}k` : `${thousands.toFixed(1)}k`;
+    }
+    return count.toString();
+  };
 
   return (
     <motion.div
@@ -54,7 +66,7 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
           <div className="flex items-center gap-1 text-primary-foreground">
             <Star size={14} className="fill-accent text-accent" />
             <span className="text-sm font-semibold">{artist.rating || 'N/A'}</span>
-            <span className="text-xs text-primary-foreground/70">({artist.reviews?.length || 0})</span>
+            <span className="text-xs text-primary-foreground/70">({formatReviewCount(artist.totalReviews || 0)})</span>
           </div>
         </div>
       </div>
