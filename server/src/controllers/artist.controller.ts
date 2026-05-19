@@ -239,7 +239,7 @@ export const updateArtist = async (req: any, res: Response) => {
         res.status(200).json(finalProfile);
     } catch (error: any) {
         console.error('❌ UpdateArtist Error:', error);
-        res.status(500).json({ message: 'Failed to update artist', error: error.message });
+        res.status(500).json({ message: `Failed to update artist: ${error.message}`, error: error.message });
     }
 };
 
