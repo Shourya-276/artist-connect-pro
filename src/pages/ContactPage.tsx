@@ -49,17 +49,23 @@ export default function ContactPage() {
         <div className="grid md:grid-cols-2 gap-8">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="space-y-6">
             {[
-              { icon: Mail, label: 'Email', value: 'hello@artisthub.in' },
-              { icon: Phone, label: 'Phone', value: '+91 98765 43210' },
+              { icon: Mail, label: 'Email', value: 'Info@live101.in', href: 'mailto:Info@live101.in' },
+              { icon: Phone, label: 'Phone', value: '+91 98210 09569', href: 'tel:+919821009569' },
               { icon: MapPin, label: 'Address', value: 'Mumbai, Maharashtra, India' },
-            ].map(({ icon: Icon, label, value }) => (
+            ].map(({ icon: Icon, label, value, href }) => (
               <div key={label} className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center shrink-0">
                   <Icon size={20} className="text-primary-foreground" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">{label}</p>
-                  <p className="font-medium text-foreground">{value}</p>
+                  {href ? (
+                    <a href={href} className="font-medium text-foreground hover:text-primary hover:underline transition-colors duration-200">
+                      {value}
+                    </a>
+                  ) : (
+                    <p className="font-medium text-foreground">{value}</p>
+                  )}
                 </div>
               </div>
             ))}
